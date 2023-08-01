@@ -97,3 +97,30 @@ const submit = () => {
 </script>
 ```
 
+
+
+### 使用VueUse设置cookie
+
+- 文档： https://vueuse.org/integrations/useCookies/#usecookies
+
+- 先npm 引入
+
+  - `npm i @vueuse/integrations`
+
+  - `npm i universal-cookie`
+
+  ```javascript
+  <script setup>
+    import { useCookies } from '@vueuse/integrations/useCookies'
+    const cookies = useCookies()
+    // 设置
+    cookies.set('admin-token', '1232344')
+    // 获取
+    cookies.get('admin-token')
+    // 删除
+    cookies.remove('admin-token')
+  </script>
+  ```
+
+  
+
