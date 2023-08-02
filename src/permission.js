@@ -1,8 +1,9 @@
 import router from '~/router'
 import { getToken } from '~/composables/auth'
 import { toast } from '~/composables/util'
+import store from './store'
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     console.log('to', to)
     console.log('from', from)
     const token = getToken()
@@ -20,5 +21,10 @@ router.beforeEach((to, from, next) => {
         })
     }
     
+    // 如果已登录，自动获取用户信息，并存储到vuex中
+    if (token) {
+        await store.dispatch('GetInfo')
+    }
+
     next()
 })

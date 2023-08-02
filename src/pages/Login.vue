@@ -44,13 +44,11 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import { Lock, User } from '@element-plus/icons-vue'
 import { toast } from '~/composables/util.js'
 import { useRouter } from 'vue-router'
-import { setToken } from '~/composables/auth.js'
-import Manager_api from '~/api/manager.js';
 
 const router = useRouter()
 
@@ -78,30 +76,39 @@ const onSubmit = () => {
         if (!valid) return false;
         // 设置loading
         loading.value = true
-        Manager_api.login({
-            username: form.username, 
-            password: form.password
-        }).then(res => {
-            
-            toast('登录成功')
 
-            // 存储token
-            setToken(res.token)
+        store.dispatch('Login', form)
+            .then(res => {
+                toast('登录成功')
 
-            // 获取用户信息
-            Manager_api.getInfo()
-                .then(resData => {
-                    store.commit('SET_USERINFO', resData)
-                })
+                // 跳转到首页
+                router.replace('/')
+            })
+            .finally(() => {
+                // 设置loading
+                loading.value = false
+            })
 
-            // 跳转到首页
-            router.replace('/')
-        }).finally(() => {
-            // 设置loading
-            loading.value = false
-        })
     })
 }
+// 监听回车函数
+function onKeyUp(e) {
+    if (e.key === "Enter") {
+        onSubmit()
+    }
+}
+
+onMounted(() => {
+    // 添加键盘监听事件
+    document.addEventListener('keyup', onKeyUp)
+})
+
+onBeforeUnmount(() => {
+    // 移除键盘监听事件
+    document.removeEventListener('keyup', onKeyUp)
+})
+
+
 </script>
 
 <style lang="scss" scoped>
