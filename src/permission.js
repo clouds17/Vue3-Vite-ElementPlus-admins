@@ -4,8 +4,6 @@ import { toast } from '~/composables/util'
 import store from './store'
 
 router.beforeEach(async (to, from, next) => {
-    console.log('to', to)
-    console.log('from', from)
     const token = getToken()
     if (!token && to.path != '/login') {
         toast('请先登录', 'error')

@@ -5,9 +5,14 @@ const URL = {
     LOGIN: '/admin/login',
     // 获取用户信息
     GETINFO: '/admin/getinfo',
+    // 退出登录
+    LOGOUT: '/admin/logout'
 }
 
 export default {
     login: ({username, password}) => request(URL.LOGIN, 'POST', {username, password}),
-    getInfo: () => request(URL.GETINFO, 'POST')
+
+    getInfo: () => request(URL.GETINFO, 'POST'),
+    
+    logout: () => request(URL.LOGOUT, 'POST')
 }
