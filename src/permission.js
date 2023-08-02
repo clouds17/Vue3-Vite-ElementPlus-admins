@@ -1,9 +1,14 @@
 import router from '~/router'
 import { getToken } from '~/composables/auth'
-import { toast } from '~/composables/util'
+import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
 import store from './store'
 
+
+// 全局前置守卫
 router.beforeEach(async (to, from, next) => {
+    // 显示loading
+    showFullLoading()
+
     const token = getToken()
     if (!token && to.path != '/login') {
         toast('请先登录', 'error')
@@ -25,4 +30,11 @@ router.beforeEach(async (to, from, next) => {
     }
 
     next()
+})
+
+// 全局后置守卫
+router.afterEach((to, from) => {
+    // 隐藏loading
+    hideFullLoading()
+
 })

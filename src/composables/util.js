@@ -1,4 +1,5 @@
-import { ElNotification, ElMessage, ElMessageBox } from 'element-plus';
+import { ElNotification, ElMessageBox } from 'element-plus';
+import nProgress from 'nprogress';
 
 // 成功提示
 export function toast(message = '成功', type = 'success', dangerouslyUseHTMLString = false) {
@@ -9,7 +10,7 @@ export function toast(message = '成功', type = 'success', dangerouslyUseHTMLSt
         duration: 3000
     })
 }
-
+// 消息弹框
 export function MessageBox(message='提示内容', type='warning', title='', confirmButtonText='确定', cancelButtonText='取消') {
     return new Promise((resolve, reject) => {
         ElMessageBox.confirm(
@@ -30,9 +31,12 @@ export function MessageBox(message='提示内容', type='warning', title='', con
     })
 }
 
-export function Message(message='成功', type='success') {
-    ElMessage({
-        type,
-        message,
-    })
+// 显示全屏loading
+export function showFullLoading() {
+    nProgress.start();
+}
+
+// 隐藏全屏loading
+export function hideFullLoading() {
+    nProgress.done();
 }

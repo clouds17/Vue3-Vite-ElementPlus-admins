@@ -5,6 +5,8 @@
 <script setup>
 </script>
 
-<style scoped>
-
+<style>
+#nprogress .bar {
+  background: #24edb2;
+}
 </style>

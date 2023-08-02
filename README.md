@@ -163,5 +163,10 @@ const submit = () => {
   </script>
   ```
 
-  
+
+
+### loading进度条
+
+- 插件： nprogress
+- 地址： https://www.npmjs.com/package/nprogress
 
