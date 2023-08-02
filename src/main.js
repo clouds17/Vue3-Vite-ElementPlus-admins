@@ -15,4 +15,7 @@ app.config.globalProperties.$baseImg = import.meta.env.VITE_IMAGE_URL
 app.use(ElementPlus)
 app.use(router)
 app.use(store)
+
+import './permission.js'
+
 app.mount('#app')
