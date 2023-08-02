@@ -168,5 +168,75 @@ const submit = () => {
 ### loading进度条
 
 - 插件： nprogress
+
 - 地址： https://www.npmjs.com/package/nprogress
 
+- 步骤
+
+  - 下载: `npm i nprogress`
+
+  - main.js里引入样式： `import 'nprogress/nprogress.css'`
+
+  - ```javascript
+    // 开始
+    NProgress.start();
+    // 结束
+    NProgress.done();
+    ```
+
+  - 在全局守卫里调用
+
+    ```
+    import NProgress from 'nprogress';
+    // 全局前置守卫
+    router.beforeEach(async (to, from, next) => {
+        // 显示loading
+        NProgress.start();
+    }）
+    // 全局后置守卫
+    router.afterEach((to, from) => {
+        // 隐藏loading
+        NProgress.done();
+    })
+    ```
+
+    
+
+
+
+### 动态设置页面标题
+
+- 现在router里面的每个路由设置meta的title
+
+  ```
+  	{ 
+          path: '/',
+          meta: {
+              title: '后台首页'
+          },
+          component: () => import('~/pages/Index.vue')
+      },
+      {
+          path: '/login',
+          meta: {
+              title: '登录页'
+          },
+          component: () => import('~/pages/Login.vue')
+      }
+  ```
+
+- 在全局前置守卫里面设置
+
+  ```
+  // 全局前置守卫
+  router.beforeEach(async (to, from, next) => {
+  
+      // 设置页面标题
+      const title = (to.meta.title ? to.meta.title + '-' : '') + '小黄的商城'
+      document.title = title
+  
+      next()
+  })
+  ```
+
+  

@@ -29,6 +29,10 @@ router.beforeEach(async (to, from, next) => {
         await store.dispatch('GetInfo')
     }
 
+    // 设置页面标题
+    const title = (to.meta.title ? to.meta.title + '-' : '') + '小黄的商城'
+    document.title = title
+
     next()
 })
 

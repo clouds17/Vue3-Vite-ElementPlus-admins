@@ -5,10 +5,16 @@ const routes = [
     { 
         path: '/',
         alias: '/home',
+        meta: {
+            title: '后台首页'
+        },
         component: () => import('~/pages/Index.vue')
     },
     {
         path: '/login',
+        meta: {
+            title: '登录页'
+        },
         component: () => import('~/pages/Login.vue')
     },
     {
