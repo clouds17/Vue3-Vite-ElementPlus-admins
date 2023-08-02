@@ -14,6 +14,47 @@ export default defineConfig({
 
 
 
+### 本地开发请求接口跨域问题
+
+- 文档： https://cn.vitejs.dev/config/server-options.html#server-proxy
+
+  - vite官网 => 配置 => 服务器选项 => server.proxy
+
+- 配置
+
+  - 在vite.config.js文件
+
+    ```
+    export default defineConfig({
+      server: {
+        proxy: {
+          '/api': {
+            target: 'http://ceshi13.dishait.cn',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+          },
+        }
+      },
+    ```
+
+  - 上面表示用/api来代替baseurl
+
+  - 所以axios配置
+
+    ```
+    const baseURL = process.env.NODE_ENV === 'development' ? '/api' : 'http://ceshi13.dishait.cn';
+    const instance = axios.create({
+        baseURL,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    });
+    ```
+
+    
+
+
+
+
+
 ### Vue3表单验证
 
 - template
