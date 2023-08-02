@@ -35,7 +35,7 @@
           </el-form-item>
           <el-form-item>
             <el-button class="w-[250px]" round color="#626aef" size="large"
-                type="primary" @click="onSubmit">登 录</el-button>
+                type="primary" @click="onSubmit" :loading="loading">登 录</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -49,10 +49,11 @@ import { Lock, User } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { login } from '~/api/manager.js';
+import Manager_api from '~/api/manager.js';
 
 const router = useRouter()
-const cookies = useCookies()
+
+const loading = ref(false)
 
 const form = reactive({
     username: '',
@@ -72,24 +73,33 @@ const formRef = ref(null)
 const onSubmit = () => {
     formRef.value.validate((valid) => {
         if (!valid) return false;
-        login(form.username, form.password)
-            .then(res => {
-                ElNotification({
-                    message: '登录成功',
-                    type: 'success',
-                    duration: 3000
-                })
-                cookies.set("admin-token", res.data.data.token)
-                router.push('/')
+        // 设置loading
+        loading.value = true
+        Manager_api.login({
+            username: form.username, 
+            password: form.password
+        }).then(res => {
+            ElNotification({
+                message: '登录成功',
+                type: 'success',
+                duration: 3000
             })
-            .catch(err => {
-                console.log('err', err)
-                ElNotification({
-                    message: err?.response.data.msg || '请求失败',
-                    type: 'error',
-                    duration: 3000
+            // 存储token
+            const cookies = useCookies()
+            cookies.set("admin-token", res.token)
+            
+            // 获取用户信息
+            Manager_api.getInfo()
+                .then(resData => {
+                    console.log(resData)
                 })
-            })
+
+            // 跳转到首页
+            router.push('/')
+        }).finally(() => {
+            // 设置loading
+            loading.value = false
+        })
     })
 }
 </script>
