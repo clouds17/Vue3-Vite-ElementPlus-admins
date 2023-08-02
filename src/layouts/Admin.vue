@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-header>
+        <el-header class=" bg-blue-500">
             <f-header></f-header>
         </el-header>
         <el-container>
