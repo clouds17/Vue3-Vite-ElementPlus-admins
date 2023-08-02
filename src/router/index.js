@@ -2,13 +2,19 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 
 
 const routes = [
-    { 
+    {
         path: '/',
-        alias: '/home',
-        meta: {
-            title: '后台首页'
-        },
-        component: () => import('~/pages/Index.vue')
+        component: () => import('~/layouts/Admin.vue'),
+        children: [
+            { 
+                path: '/',
+                alias: '/home',
+                meta: {
+                    title: '后台首页'
+                },
+                component: () => import('~/pages/Index.vue')
+            },
+        ]
     },
     {
         path: '/login',

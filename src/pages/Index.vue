@@ -1,7 +1,5 @@
 <template>
     <div>
-        后台首页{{ $store.getters.user.username }}
-
         <el-button type="primary" @click="logout">退出登录</el-button>
     </div>
 </template>
