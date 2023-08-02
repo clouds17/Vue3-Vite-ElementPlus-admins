@@ -45,6 +45,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useStore } from 'vuex'
 import { Lock, User } from '@element-plus/icons-vue'
 import { toast } from '~/composables/util.js'
 import { useRouter } from 'vue-router'
@@ -52,6 +53,8 @@ import { setToken } from '~/composables/auth.js'
 import Manager_api from '~/api/manager.js';
 
 const router = useRouter()
+
+const store = useStore()
 
 const loading = ref(false)
 
@@ -88,7 +91,7 @@ const onSubmit = () => {
             // 获取用户信息
             Manager_api.getInfo()
                 .then(resData => {
-                    console.log(resData)
+                    store.commit('SET_USERINFO', resData)
                 })
 
             // 跳转到首页
