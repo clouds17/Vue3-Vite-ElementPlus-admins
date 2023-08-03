@@ -60,7 +60,6 @@
 </template>
 
 <script setup>
-import { ArrowDown, Fold, Refresh, FullScreen, Aim } from '@element-plus/icons-vue'
 import { useFullscreen } from '@vueuse/core'
 import FormDrawer from '~/components/FormDrawer.vue'
 import { useRepassword, useLogout } from '~/composables/useManager.js'

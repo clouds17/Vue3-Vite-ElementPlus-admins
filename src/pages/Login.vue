@@ -46,7 +46,6 @@
 <script setup>
 import { reactive, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
-import { Lock, User } from '@element-plus/icons-vue'
 import { toast } from '~/composables/util.js'
 import { useRouter } from 'vue-router'
 
