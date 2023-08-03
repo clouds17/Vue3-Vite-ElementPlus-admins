@@ -2,6 +2,12 @@
   margin: 0;
   padding: 0;
   outline: none;
+  /* 隐藏 IE、Edge 和 Firefox 的滚动条 */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+*::-webkit-scrollbar {
+    display: none;
 }
 body {
   min-width: 320px;
@@ -11,6 +17,7 @@ body {
   font-weight: 400;
   color: #333;
 }
+
 a {
   font-weight: 500;
   color: #646cff;

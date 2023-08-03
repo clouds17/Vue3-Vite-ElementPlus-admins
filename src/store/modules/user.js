@@ -1,5 +1,8 @@
 import Manager_api from '~/api/manager.js';
 import { setToken, removeToken } from '~/composables/auth.js'
+
+console.log('Manager_api', Manager_api)
+
 export default {
     state: () => ({ 
         user: {},

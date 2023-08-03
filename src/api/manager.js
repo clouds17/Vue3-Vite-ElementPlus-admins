@@ -11,12 +11,14 @@ const URL = {
     UPDATE_PASSWORD: '/admin/updatepassword'
 }
 
+
+
 export default {
-    login: ({username, password}) => request(URL.LOGIN, 'POST', {username, password}),
+    login: (options = {}) => request(URL.LOGIN, 'POST', {username, password}),
 
-    getInfo: () => request(URL.GETINFO, 'POST'),
+    getInfo: (options = {}) => request(URL.GETINFO, 'POST'),
     
-    logout: () => request(URL.LOGOUT, 'POST'),
+    logout: (options = {}) => request(URL.LOGOUT, 'POST'),
 
-    updatePassword: ({oldpassword, password, repassword}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
+    updatePassword: (options = {}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
 }
