@@ -6,10 +6,25 @@
         </div>
         <div class="flex items-center">
             <el-icon class="icon-btn"><Fold /></el-icon>
-            <el-icon class="icon-btn"><Refresh /></el-icon>
+            <el-tooltip
+                effect="dark"
+                content="刷新"
+                placement="bottom"
+            >
+                <el-icon @click="handleRefresh" class="icon-btn"><Refresh /></el-icon>
+            </el-tooltip>
         </div>
         <div class="flex items-center ml-auto">
-            <el-icon class="icon-btn"><FullScreen /></el-icon>
+            <el-tooltip
+                effect="dark"
+                :content="isFullscreen ? '取消全屏' : '全屏'"
+                placement="bottom"
+            >
+                <el-icon @click="toggle" class="icon-btn">
+                    <FullScreen v-if="!isFullscreen" />
+                    <Aim v-else />
+                </el-icon>
+            </el-tooltip>
             <el-dropdown class="px-7" @command="handleCommand">
                 <span class="el-dropdown-link">
                     <el-avatar :size="40" :src="$store.state.user.user.avatar" />
@@ -20,7 +35,7 @@
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item command="password">修改密码</el-dropdown-item>
+                        <el-dropdown-item command="rePassword">修改密码</el-dropdown-item>
                         <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
@@ -30,11 +45,47 @@
 </template>
 
 <script setup>
-import { ArrowDown, Fold, Refresh, FullScreen } from '@element-plus/icons-vue'
+import { ArrowDown, Fold, Refresh, FullScreen, Aim } from '@element-plus/icons-vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { MessageBox, toast } from '~/composables/util.js'
+import { useFullscreen } from '@vueuse/core'
 
+const { isFullscreen, toggle } = useFullscreen()
+const store = useStore()
+const router = useRouter()
+
+
+// 刷新
+const handleRefresh = () => location.reload()
+
+// 下拉选择点击函数
 function handleCommand(command) {
-    console.log(command)
+    switch (command) {
+        case 'rePassword':
+            console.log(command)
+            break;
+        case 'logout':
+            handleLogout()
+            break;
+        default:
+            break;
+    }
 }
+
+
+// 退出登录
+function handleLogout() {
+    MessageBox('是否要退出登录?')
+        .then(res => {
+            store.dispatch('Logout')
+                .then(res => {
+                    router.push('/login')
+                    toast('退出登录成功')
+                })
+        })
+}
+
 </script>
 
 <style lang="scss" scoped>
