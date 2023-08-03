@@ -1,8 +1,9 @@
 <template>
     <el-container>
-        <el-header class=" bg-blue-500">
+        <el-header >
             <f-header></f-header>
         </el-header>
+        <div class="h-[64px]"></div>
         <el-container>
             <el-aside>
                 <f-menu></f-menu>
@@ -23,5 +24,12 @@ import FTagList from '~/layouts/components/FTagList.vue';
 </script>
 
 <style lang="scss" scoped>
-
+.el-header {
+    @apply bg-indigo-700;
+    height: 64px;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
 </style>
