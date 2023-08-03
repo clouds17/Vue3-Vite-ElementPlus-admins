@@ -142,6 +142,8 @@ const submit = () => {
 
 ### 使用VueUse设置cookie
 
+- useCookies
+
 - 文档： https://vueuse.org/integrations/useCookies/#usecookies
 
 - 先npm 引入
@@ -164,6 +166,29 @@ const submit = () => {
   ```
 
 
+
+### 使用VueUse设置全屏
+
+- usefullscreen
+
+- 文档： https://vueuse.org/core/useFullscreen/#usefullscreen
+
+- 先npm 引入核心包
+
+  - `npm i @vueuse/core`
+
+  ```
+  import { useFullscreen } from '@vueuse/core'
+  
+  const { isFullscreen, enter, exit, toggle } = useFullscreen()
+  
+  // isFullscreen： 是否全屏的变量
+  // enter: 进去全屏的方法
+  // exit: 取消全屏的方法
+  // toggle: 切换的方法
+  ```
+
+  
 
 ### loading进度条
 

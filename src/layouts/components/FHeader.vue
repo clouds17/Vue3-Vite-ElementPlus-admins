@@ -42,6 +42,24 @@
             </el-dropdown>
         </div>
     </div>
+
+    <el-drawer v-model="showDrawer" title="修改密码" :size="s_drawer" :close-on-click-modal="false">
+        <el-form ref="formRef" :rules="rules" :model="form" label-width="80px" size="large" class="flex flex-col min-h-full">
+            <el-form-item prop="oldpassword" label="旧密码">
+                <el-input v-model="form.oldpassword" size="large" show-password placeholder="请输入旧密码"></el-input>
+            </el-form-item>
+            <el-form-item prop="password" label="新密码">
+                <el-input v-model="form.password" size="large" show-password placeholder="请输入密码"></el-input>
+            </el-form-item>
+            <el-form-item prop="repassword" label="确认密码">
+                <el-input v-model="form.repassword" size="large" show-password placeholder="请输入确认密码"></el-input>
+            </el-form-item>
+            <el-form-item class="mt-auto" style="margin-left: -60px;">
+                <el-button type="primary" class="w-[120px]" @click="onSubmit" :loading="loading">提交</el-button>
+                <el-button type="warning" class="w-[120px]" @click="showDrawer = false">关闭</el-button>
+            </el-form-item>
+        </el-form>
+    </el-drawer>
 </template>
 
 <script setup>
@@ -50,11 +68,84 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { MessageBox, toast } from '~/composables/util.js'
 import { useFullscreen } from '@vueuse/core'
+import { ref, reactive } from 'vue'
 
 const { isFullscreen, toggle } = useFullscreen()
 const store = useStore()
 const router = useRouter()
+let showDrawer = ref(false)
 
+const win_width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+let s_drawer = 0
+
+if (win_width > 1280) {
+    s_drawer = 500
+} else if (win_width > 1024) {
+    s_drawer = 400
+} else if (win_width > 414) {
+    s_drawer = 300
+} else {
+    s_drawer = 250
+}
+
+// 修改密码
+let loading = ref(false)
+const form = reactive({
+    oldpassword: '', 
+    password: '',
+    repassword: ''
+})
+const checkPass = (rule, value, callback) => {
+    const reg =  /^(?=.*\d).{5,16}$/
+    if (!reg.test(value)) {
+        return callback(new Error("密码至少包含一个数字"))
+    }
+    callback()
+}
+const checkRePass = (rule, value, callback) => {
+    if (value !== form.password) {
+        return callback(new Error("密码不一致"))
+    }
+    callback()
+}
+const rules = {
+    oldpassword: [
+        { required: true, message: '请输入旧密码', trigger: 'blur' },
+        { min: 5, max: 16, message: '密码长度为5到16个字符', trigger: 'blur' },
+    ],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 5, max: 16, message: '密码长度为5到16个字符', trigger: 'blur' },
+        { validator: checkPass, trigger: 'blur' }
+    ],
+    repassword: [
+        { required: true, message: '请输入确认密码', trigger: 'blur' },
+        { min: 5, max: 16, message: '密码长度为5到16个字符', trigger: 'blur' },
+        { validator: checkRePass, trigger: 'blur' }
+    ]
+}
+
+const formRef = ref(null)
+// 提交密码
+function onSubmit() {
+    formRef.value.validate((valid) => {
+        if (!valid) return false;
+        loading.value = true
+        store.dispatch('UpdatePassword', form)
+            .then(res => {
+                showDrawer.value = false
+                toast('密码修改成功,请重新登录')
+
+                return store.dispatch('Logout')
+            })
+            .then(res => {
+                router.push('/login')
+            })
+            .finally(() => {
+                loading.value = false
+            })
+    })
+}
 
 // 刷新
 const handleRefresh = () => location.reload()
@@ -63,7 +154,7 @@ const handleRefresh = () => location.reload()
 function handleCommand(command) {
     switch (command) {
         case 'rePassword':
-            console.log(command)
+            showDrawer.value = true
             break;
         case 'logout':
             handleLogout()

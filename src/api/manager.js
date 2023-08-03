@@ -6,7 +6,9 @@ const URL = {
     // 获取用户信息
     GETINFO: '/admin/getinfo',
     // 退出登录
-    LOGOUT: '/admin/logout'
+    LOGOUT: '/admin/logout',
+    // 修改密码
+    UPDATE_PASSWORD: '/admin/updatepassword'
 }
 
 export default {
@@ -14,5 +16,7 @@ export default {
 
     getInfo: () => request(URL.GETINFO, 'POST'),
     
-    logout: () => request(URL.LOGOUT, 'POST')
+    logout: () => request(URL.LOGOUT, 'POST'),
+
+    updatePassword: ({oldpassword, password, repassword}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
 }

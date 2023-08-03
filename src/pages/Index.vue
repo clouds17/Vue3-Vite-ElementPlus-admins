@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-button type="primary" @click="logout">退出登录</el-button>
+        <el-button type="primary" >退出登录</el-button>
     </div>
 </template>
 
