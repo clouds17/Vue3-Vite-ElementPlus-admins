@@ -5,7 +5,13 @@
             <h3 class="pl-3 text-white">小黄的商城后台</h3>
         </div>
         <div class="flex items-center">
-            <el-icon class="icon-btn"><Fold /></el-icon>
+            <el-tooltip
+                effect="dark"
+                :content="menuText"
+                placement="bottom"
+            >
+                <el-icon @click="toggleMenu" class="icon-btn"><Fold /></el-icon>
+            </el-tooltip>
             <el-tooltip
                 effect="dark"
                 content="刷新"
@@ -63,6 +69,11 @@
 import { useFullscreen } from '@vueuse/core'
 import FormDrawer from '~/components/FormDrawer.vue'
 import { useRepassword, useLogout } from '~/composables/useManager.js'
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+
+const store = useStore()
+// 是否全屏
 const { isFullscreen, toggle } = useFullscreen()
 // 修改密码
 const {
@@ -74,11 +85,13 @@ const {
     onClose
 } = useRepassword()
 // 退出登录
-const {
-    handleLogout
-} = useLogout()
+const { handleLogout } = useLogout()
 
-
+// 是否折叠侧边栏
+const menuText = computed(() => store.getters.isCollapse ? '展开侧边栏' : '折叠侧边栏')
+function toggleMenu() {
+    store.commit('SET_ISCOLLAPSE')
+}
 
 // 刷新
 const handleRefresh = () => location.reload()

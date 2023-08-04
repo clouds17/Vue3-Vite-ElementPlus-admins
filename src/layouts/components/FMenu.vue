@@ -1,8 +1,9 @@
 <template>
     <el-menu
-        default-active="2"
+        :default-active="defaultActive"
         class="el-menu-vertical-demo"
-        :collapse="isCollapse"
+        :collapse="$store.getters.isCollapse"
+        unique-opened
         @select="handleSelect"
     >
         <template v-for="(item, index) in asideMenus" :key="index">
@@ -36,10 +37,13 @@
 
 <script setup>
 import { ref } from "vue"
-import {useRouter} from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
-const isCollapse = ref(false)
+const route = useRoute()
+
+// 当前路由路径
+const defaultActive = ref(route.path)
 
 const asideMenus = [
     {
@@ -71,15 +75,11 @@ const asideMenus = [
     }
 ]
 
-
+// 点击菜单转跳地址
 function handleSelect(index, indexPath, item, routeResult) {
     router.push({
         path: index
     })
-    console.log('index', index);
-    console.log('indexPath', indexPath);
-    console.log('item', item);
-    console.log('routeResult', routeResult);
 }
 
 </script>
@@ -89,9 +89,11 @@ function handleSelect(index, indexPath, item, routeResult) {
     min-height: 100%;
     border: 0;
 }
+
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 300px;
 }
+
 
 @media screen and (max-width: 1280px) {
     .el-menu-vertical-demo:not(.el-menu--collapse) {

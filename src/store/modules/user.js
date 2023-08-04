@@ -4,10 +4,10 @@ import { setToken, removeToken } from '~/composables/auth.js'
 
 export default {
     state: () => ({ 
-        user: {},
+        user: null,
     }),
     getters: { 
-        user: state => state.user,
+        user: state => state.user || {},
     },
     mutations: { 
         // 记录用户信息
