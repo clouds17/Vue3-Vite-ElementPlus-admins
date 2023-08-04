@@ -36,44 +36,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import { useRouter, useRoute } from 'vue-router'
+import { useStore } from "vuex";
 
 const router = useRouter()
 const route = useRoute()
+const store = useStore()
 
 // 当前路由路径
 const defaultActive = ref(route.path)
 
-const asideMenus = [
-    {
-        "name": "后台面板",
-        "icon": "help",
-        "child": [
-            {
-                "name": "主控台",
-                "icon": "home-filled",
-                "frontpath": "/"
-            }
-        ]
-    },
-    {
-        "name": "商城管理",
-        "icon": "shopping-bag",
-        "child": [
-            {
-                "name": "商品管理",
-                "icon": "shopping-cart-full",
-                "frontpath": "/goods/list"
-            }
-        ]
-    },
-    {
-        "name": "权限管理",
-        "icon": "Avatar",
-        "frontpath": "/persion/list"
-    }
-]
+// 获取菜单数据
+const asideMenus = computed(() => store.getters.menus)
 
 // 点击菜单转跳地址
 function handleSelect(index, indexPath, item, routeResult) {
@@ -86,8 +61,10 @@ function handleSelect(index, indexPath, item, routeResult) {
 
 <style lang="scss" scoped>
 .el-menu-vertical-demo {
-    min-height: 100%;
+    height: 100%;
     border: 0;
+    overflow-y: auto;
+    padding-bottom: 100px;
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {

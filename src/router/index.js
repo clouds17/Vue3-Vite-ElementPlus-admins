@@ -24,10 +24,6 @@ const routes = [
         component: () => import('~/pages/Login.vue')
     },
     {
-        path: '/about',
-        component: () => import('~/pages/About.vue')
-    },
-    {
         path: '/:pathMatch(.*)*',
         component: () => import('~/pages/404.vue')
     }

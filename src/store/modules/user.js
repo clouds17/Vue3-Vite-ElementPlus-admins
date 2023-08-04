@@ -4,10 +4,16 @@ import { setToken, removeToken } from '~/composables/auth.js'
 
 export default {
     state: () => ({ 
+        // 用户数据
         user: null,
+        // 菜单数据
+        menus: null,
+        ruleNames: null
     }),
     getters: { 
         user: state => state.user || {},
+        menus: state => state.menus || [],
+        ruleNames: state => state.ruleNames || []
     },
     mutations: { 
         // 记录用户信息
@@ -20,6 +26,15 @@ export default {
             removeToken()
             // 清除用户信息
             state.user = {}
+            state.menus = []
+            state.ruleNames = []
+        },
+        // 设置菜单数据
+        SET_MENUS(state, menus) {
+            state.menus = menus
+        },
+        SET_RULENAMES(state, ruleNames) {
+            state.ruleNames = ruleNames
         }
     },
     actions: { 
@@ -57,6 +72,8 @@ export default {
                 Manager_api.getInfo()
                     .then(res => {
                         commit('SET_USERINFO', res)
+                        commit('SET_MENUS', res.menus)
+                        commit('SET_RULENAMES', res.ruleNames)
                         resolve(res)
                     })
                     .catch(err => reject(err))

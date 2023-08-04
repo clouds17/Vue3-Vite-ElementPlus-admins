@@ -24,6 +24,12 @@ import FTagList from '~/layouts/components/FTagList.vue';
 </script>
 
 <style lang="scss" scoped>
+.el-container {
+    height: 0;
+}
+.el-aside {
+    overflow: hidden
+}
 .el-header {
     @apply bg-indigo-700;
     height: 64px;
