@@ -1,4 +1,4 @@
-import router from '~/router'
+import { router, addRoutes } from '~/router'
 import { getToken } from '~/composables/auth'
 import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
 import store from './store'
@@ -27,6 +27,8 @@ router.beforeEach(async (to, from, next) => {
     // 如果已登录，自动获取用户信息，并存储到vuex中
     if (token) {
         await store.dispatch('GetInfo')
+
+        addRoutes(store.getters.menus)
     }
 
     // 设置页面标题

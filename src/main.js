@@ -6,7 +6,7 @@ import 'element-plus/theme-chalk/display.css'
 import 'virtual:windi.css'
 import 'nprogress/nprogress.css'
 import App from './App.vue'
-import router from './router'
+import { router } from './router'
 import store from './store'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
