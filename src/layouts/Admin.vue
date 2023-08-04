@@ -32,4 +32,9 @@ import FTagList from '~/layouts/components/FTagList.vue';
     left: 0;
     top: 0;
 }
+.el-aside {
+    max-width: 300px;
+    width: auto;
+    @apply shadow-md;
+}
 </style>
