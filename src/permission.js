@@ -24,18 +24,18 @@ router.beforeEach(async (to, from, next) => {
         })
     }
     
+    let hasNewRouters = false
     // 如果已登录，自动获取用户信息，并存储到vuex中
     if (token) {
-        await store.dispatch('GetInfo')
-
-        addRoutes(store.getters.menus)
+        let { menus } = await store.dispatch('GetInfo')
+        hasNewRouters = addRoutes(menus)
     }
 
     // 设置页面标题
     const title = (to.meta.title ? to.meta.title + '-' : '') + '小黄的商城'
     document.title = title
 
-    next()
+    hasNewRouters ? next(to.fullPath) : next()
 })
 
 // 全局后置守卫
