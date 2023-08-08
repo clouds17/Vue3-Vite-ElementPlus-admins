@@ -44,8 +44,10 @@ const router = useRouter()
 const route = useRoute()
 const store = useStore()
 
-// 当前路由路径
-const defaultActive = ref(route.path)
+// 设置当前路径
+store.commit('SET_MENUACTIVE', route.path)
+// 获取当前默认路由路径
+const defaultActive = computed(() => store.getters.defaultMenuActive)
 
 // 获取菜单数据
 const asideMenus = computed(() => store.getters.menus)

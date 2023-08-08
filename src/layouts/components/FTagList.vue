@@ -40,6 +40,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import { useStore } from 'vuex'
 import { useCookies } from '@vueuse/integrations/useCookies'
 
 const { 
@@ -58,6 +59,7 @@ function tagListComposition() {
     const cookie = useCookies()
     const route = useRoute()
     const router = useRouter()
+    const store = useStore()
 
     const activeTab = ref(route.fullPath)
     const tabList = ref([
@@ -69,6 +71,8 @@ function tagListComposition() {
     // 监听路由修改
     onBeforeRouteUpdate((to, from) => {
         console.log('监听', to)
+        // 设置菜单当前路径
+        store.commit('SET_MENUACTIVE', to.path)
         activeTab.value = to.path
         addTabList({
             title: to.meta.title,
@@ -92,13 +96,26 @@ function tagListComposition() {
         }
     }
     // 切换tab
-    const changeTab = (targetName) => {
-        activeTab.value = targetName
-        router.push(targetName)
+    const changeTab = (path) => {
+        activeTab.value = path
+        router.push(path)
     }
     // 删除tab
-    const removeTab = (targetName) => {
-    
+    const removeTab = (closePath) => {
+        let curPath = activeTab.value
+        let tabs = tabList.value
+
+        if (curPath == closePath) {
+            let curIndex = tabs.findIndex(t => t.path == curPath)
+            const nextTab = tabs[curIndex + 1] || tabs[curIndex - 1]
+            if (nextTab) {
+                changeTab(nextTab.path)
+            }
+        }
+
+        tabList.value = tabs.filter(t => t.path != closePath)
+        cookie.set('tabList', tabList.value)
+
     }
 
 
