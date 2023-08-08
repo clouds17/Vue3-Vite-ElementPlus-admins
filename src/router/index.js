@@ -108,23 +108,3 @@ export function addRoutes(menus) {
 
 
 
-// export function addRoutes(menus) {
-//     const addRoutesByMenus = (arr) => {
-//         arr.forEach(menuItem => {
-//             let item = asyncRoutes.find(obj => obj.path == menuItem.frontpath)
-            
-//             if (item && !router.hasRoute(item.path)) {
-                
-//                 router.addRoute("admin", item)
-//             }
-//             if (menuItem.child && menuItem.child.length > 0) {
-//                 addRoutesByMenus(menuItem.child)
-//             }
-//         });
-//     }
-
-//     addRoutesByMenus(menus)
-
-//     console.log(router.getRoutes())
-// }
-

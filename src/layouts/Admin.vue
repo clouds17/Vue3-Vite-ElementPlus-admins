@@ -43,4 +43,8 @@ import FTagList from '~/layouts/components/FTagList.vue';
     width: auto;
     @apply shadow-md;
 }
+
+.el-main {
+    @apply bg-light-200;
+}
 </style>
