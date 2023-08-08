@@ -17,7 +17,7 @@
         </el-tabs>
 
         <span class="el-dropdown-span">
-            <el-dropdown>
+            <el-dropdown @command="handleClose">
                 <span class="el-dropdown-link">
                     <el-icon >
                         <arrow-down />
@@ -25,11 +25,8 @@
                 </span>
                 <template #dropdown>
                 <el-dropdown-menu>
-                    <el-dropdown-item>Action 1</el-dropdown-item>
-                    <el-dropdown-item>Action 2</el-dropdown-item>
-                    <el-dropdown-item>Action 3</el-dropdown-item>
-                    <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                    <el-dropdown-item divided>Action 5</el-dropdown-item>
+                    <el-dropdown-item command="clearOther">关闭其他</el-dropdown-item>
+                    <el-dropdown-item command="clearAll">关闭所有</el-dropdown-item>
                 </el-dropdown-menu>
                 </template>
             </el-dropdown>
@@ -38,95 +35,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { useStore } from 'vuex'
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { useTagList } from '~/composables/useTagList.js'
 
 const { 
     activeTab,
     tabList,
-    initTabList,
     changeTab,
-    removeTab
- } = tagListComposition()
+    removeTab,
+    handleClose
+ } = useTagList()
 
 
-initTabList()
-
-// f-tag-list总方法函数
-function tagListComposition() {
-    const cookie = useCookies()
-    const route = useRoute()
-    const router = useRouter()
-    const store = useStore()
-
-    const activeTab = ref(route.fullPath)
-    const tabList = ref([
-        {
-            title: '后台首页',
-            path: '/'
-        }
-    ])
-    // 监听路由修改
-    onBeforeRouteUpdate((to, from) => {
-        console.log('监听', to)
-        // 设置菜单当前路径
-        store.commit('SET_MENUACTIVE', to.path)
-        activeTab.value = to.path
-        addTabList({
-            title: to.meta.title,
-            path: to.path
-        })
-    })
-    // 添加tab
-    const addTabList = (tab) => {
-        let noTab = tabList.value.findIndex(t => t.path == tab.path) == -1
-        if (noTab) {
-            tabList.value.push(tab)
-
-            cookie.set('tabList', tabList.value)
-        }
-    }
-    // 初始化tab
-    const initTabList = () => {
-        const tab = cookie.get('tabList')
-        if (tab) {
-            tabList.value = tab
-        }
-    }
-    // 切换tab
-    const changeTab = (path) => {
-        activeTab.value = path
-        router.push(path)
-    }
-    // 删除tab
-    const removeTab = (closePath) => {
-        let curPath = activeTab.value
-        let tabs = tabList.value
-
-        if (curPath == closePath) {
-            let curIndex = tabs.findIndex(t => t.path == curPath)
-            const nextTab = tabs[curIndex + 1] || tabs[curIndex - 1]
-            if (nextTab) {
-                changeTab(nextTab.path)
-            }
-        }
-
-        tabList.value = tabs.filter(t => t.path != closePath)
-        cookie.set('tabList', tabList.value)
-
-    }
-
-
-    return {
-        activeTab,
-        tabList,
-        initTabList,
-        changeTab,
-        removeTab
-    }
-}
 </script>
 
 <style lang="scss" scoped>
