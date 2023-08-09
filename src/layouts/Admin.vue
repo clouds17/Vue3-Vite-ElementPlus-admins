@@ -10,7 +10,14 @@
             </el-aside>
             <el-main>
                 <f-tag-list></f-tag-list>
-                <router-view></router-view>
+                <router-view v-slot="{ Component }">
+                    <transition name="fade">
+                        <keep-alive :max="10">
+                            <component :is="Component"></component>
+                        </keep-alive>
+                    </transition>
+                    
+                </router-view>
             </el-main>
         </el-container>
     </el-container>
@@ -47,4 +54,21 @@ import FTagList from '~/layouts/components/FTagList.vue';
 .el-main {
     @apply bg-light-200;
 }
+.fade-leave-to,
+.fade-enter-from {
+    opacity: 0;
+}
+.fade-leave-from,
+.fade-enter-to {
+    opacity: 1;
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: all .3s ease;
+}
+
+.fade-enter-active {
+    transition-delay: .3s;
+}
+
 </style>
