@@ -46,6 +46,16 @@
             </el-col>
         </el-row>
         
+        <index-navs></index-navs>
+        
+        <el-row :gutter="20" class="mt-5">
+            <el-col :span="12" :offset="0">
+                <index-chart></index-chart>
+            </el-col>
+            <el-col :span="12" :offset="0"></el-col>
+        </el-row>
+        
+
     </div>
 </template>
 
@@ -53,6 +63,8 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import CountTo from '~/components/CountTo.vue'
+import IndexNavs from "~/components/IndexNavs.vue";
+import IndexChart from "~/components/IndexChart.vue";
 
 const store = useStore()
 const panels = ref([])
@@ -68,10 +80,7 @@ store.dispatch('Statistics2')
         console.log('统计2', res)
     })
 
-store.dispatch('Statistics3')
-    .then(res => {
-        console.log('统计3', res)
-    })
+
 
 
 </script>

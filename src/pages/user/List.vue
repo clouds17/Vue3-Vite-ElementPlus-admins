@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        用户/user/list
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        商品/goods/list
     </div>
 </template>
 

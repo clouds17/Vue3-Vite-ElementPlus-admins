@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        订单/order/list
     </div>
 </template>
 

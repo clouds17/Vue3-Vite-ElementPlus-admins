@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        配置/setting/base
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        评论/comment/list
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        公告/notice/list
     </div>
 </template>
 

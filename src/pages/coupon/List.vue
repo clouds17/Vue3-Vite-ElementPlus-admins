@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        优惠券/coupon/list
     </div>
 </template>
 

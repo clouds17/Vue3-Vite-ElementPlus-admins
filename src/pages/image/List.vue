@@ -1,6 +1,6 @@
 <template>
     <div>
-        分类/category/list
+        图库/image/list
     </div>
 </template>
 

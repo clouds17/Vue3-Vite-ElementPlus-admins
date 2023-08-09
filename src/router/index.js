@@ -72,9 +72,65 @@ const asyncRoutes = [
         path: '/goods/list',
         name: '/goods/list',
         meta: {
-            title: '商品管理'
+            title: '商品列表'
         },
         component: () => import('~/pages/goods/List.vue')
+    },
+    { 
+        path: '/user/list',
+        name: '/user/list',
+        meta: {
+            title: '用户列表'
+        },
+        component: () => import('~/pages/user/List.vue')
+    },
+    { 
+        path: '/order/list',
+        name: '/order/list',
+        meta: {
+            title: '订单列表'
+        },
+        component: () => import('~/pages/order/List.vue')
+    },
+    { 
+        path: '/comment/list',
+        name: '/comment/list',
+        meta: {
+            title: '评价列表'
+        },
+        component: () => import('~/pages/comment/List.vue')
+    },
+    { 
+        path: '/image/list',
+        name: '/image/list',
+        meta: {
+            title: '图库列表'
+        },
+        component: () => import('~/pages/image/List.vue')
+    },
+    { 
+        path: '/notice/list',
+        name: '/notice/list',
+        meta: {
+            title: '公告列表'
+        },
+        component: () => import('~/pages/notice/List.vue')
+    },
+    { 
+        path: '/setting/base',
+        name: '/setting/base',
+        meta: {
+            title: '配置列表'
+        },
+        component: () => import('~/pages/setting/Base.vue')
+    },
+    { 
+        path: '/coupon/list',
+        name: '/coupon/list',
+        meta: {
+            title: '优惠券'
+        },
+        component: () => import('~/pages/coupon/List.vue')
     },
 ]
 

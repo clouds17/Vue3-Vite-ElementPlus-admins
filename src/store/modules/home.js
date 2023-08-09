@@ -28,7 +28,7 @@ export default {
             })
         },
         // 后台首页统计3
-        Statistics3({commit}, { type = 'hour' } = { type: 'hour' }) {
+        Statistics3({commit}, { type = 'week' } = { type: 'week' }) {
             return new Promise((resolve, reject) => {
                 Home_api.statistics3({
                     type
