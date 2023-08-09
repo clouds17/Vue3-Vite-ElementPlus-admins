@@ -33,7 +33,9 @@
                         </div>
                     </template>
                     <!-- card body -->
-                    <span class="text-3xl font-bold text-gray-600">{{ item.value }}</span>
+                    <span class="text-3xl font-bold text-gray-600">
+                        <count-to :value="item.value"></count-to>
+                    </span>
                     <el-divider />
                     <div class="flex items-center justify-between text-sm text-gray-500">
                         <span>{{item.subTitle}}</span>
@@ -50,6 +52,7 @@
 <script setup>
 import { ref } from "vue";
 import { useStore } from "vuex";
+import CountTo from '~/components/CountTo.vue'
 
 const store = useStore()
 const panels = ref([])
