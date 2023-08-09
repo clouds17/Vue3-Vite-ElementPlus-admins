@@ -64,6 +64,7 @@ const {
 .f-tag-list {
     display: flex;
     overflow: hidden;
+    margin-bottom: 15px;
     .el-tabs {
         flex: 1;
         overflow: hidden;

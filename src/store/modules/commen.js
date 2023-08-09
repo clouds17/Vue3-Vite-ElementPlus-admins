@@ -3,7 +3,7 @@ export default {
         return {
             // 侧边栏是否折叠
             isCollapse: null,
-            // 当前左侧菜单路由
+            // 当前菜单路由
             defaultMenuActive: null
         }
     },
