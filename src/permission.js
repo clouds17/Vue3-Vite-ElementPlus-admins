@@ -3,6 +3,7 @@ import { getToken } from '~/composables/auth'
 import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
 import store from './store'
 
+let hasGetInfo = false
 
 // 全局前置守卫
 router.beforeEach(async (to, from, next) => {
@@ -26,8 +27,9 @@ router.beforeEach(async (to, from, next) => {
     
     let hasNewRouters = false
     // 如果已登录，自动获取用户信息，并存储到vuex中
-    if (token) {
+    if (token && !hasGetInfo) {
         let { menus } = await store.dispatch('GetInfo')
+        hasGetInfo = true
         hasNewRouters = addRoutes(menus)
     }
 
