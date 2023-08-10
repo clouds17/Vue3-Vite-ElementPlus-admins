@@ -22,7 +22,12 @@ app.use(ElementPlus)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-
+// 导入路由全局守卫
 import './permission.js'
+
+// 指令权限控制
+import permission from './directive/permission.js'
+app.use(permission)
+
 
 app.mount('#app')
