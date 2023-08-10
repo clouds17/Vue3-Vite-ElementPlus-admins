@@ -486,5 +486,82 @@ const form = reactive({
   
   ```
 
-  
 
+
+
+### 指令控制权限
+
+> 后台管理系统会根据角色的权限控制显示哪些模块信息
+
+1. 首先：
+
+   - 用户返回的角色权限数据
+
+   ```js
+   "ruleNames": [
+        "createRule,POST",
+        "updateRule,POST",
+        "deleteRule,POST",
+        "getRuleList,GET",
+        "updateRuleStatus,POST",
+        "createRole,POST",
+        "updateRole,POST",
+        "deleteRole,POST",
+        "getRoleList,GET",
+        "updateRoleStatus,POST",
+        "getGoodsList,GET"
+    ]
+    // 这是我用户返回的角色权限数据，具体和后端商量
+   ```
+
+   
+
+2. 自定义全局指令
+
+   - /src/directive/permission.js
+
+   ```js
+   // 我把角色权限的数据放在了 store.getters.ruleNames 里
+   import store from "../store"
+   
+   function hasPermission(value, el = false) {
+       if (!Array.isArray(value)) {
+           throw new Error(`需要配置权限，例如 v-permission="['getStatistics1,GET']"`)
+       }
+   
+       const hasAuth = value.some(v => store.getters.ruleNames.includes(v))
+       if (el && !hasAuth) {
+           el.parentNode && el.parentNode.removeChild(el)
+       }
+       return hasAuth
+   }
+   
+   export default {
+       // 用app.use导入，可以被当成定义在一个install的函数下调用，函数的参数就是app
+       install(app) {
+           // 指令权限控制
+           app.directive('permission', {
+               mounted(el, binding) {
+                   hasPermission(binding.value, el)
+               }
+           })
+       }
+   }
+   ```
+
+   - main.js
+
+   ```js
+   // 指令权限控制
+   import permission from './directive/permission.js'
+   app.use(permission)
+   ```
+
+   - 用法
+
+   ```vue
+   // 如果ruleNames里面有'getStatistics3,GET'，该模块显示，如果没有则不显示
+   <div v-permission="['getStatistics3,GET']"></div>
+   ```
+
+   

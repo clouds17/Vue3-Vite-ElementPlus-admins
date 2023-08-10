@@ -24,6 +24,12 @@ router.beforeEach(async (to, from, next) => {
             path: from.path ? from.path : '/'
         })
     }
+
+    // 登录
+    if (token && to.path == '/' && from.path == '/login') {
+        hasGetInfo = false
+    }
+
     
     let hasNewRouters = false
     // 如果已登录，自动获取用户信息，并存储到vuex中

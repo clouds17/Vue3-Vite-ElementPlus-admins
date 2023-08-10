@@ -3,7 +3,6 @@
         <el-header >
             <f-header></f-header>
         </el-header>
-        <div class="h-[64px]"></div>
         <el-container>
             <el-aside>
                 <f-menu></f-menu>
@@ -11,7 +10,7 @@
             <el-main>
                 <f-tag-list></f-tag-list>
                 <router-view v-slot="{ Component }">
-                    <transition name="fade">
+                    <transition name="fade" mode="out-in">
                         <keep-alive :max="10">
                             <component :is="Component"></component>
                         </keep-alive>
@@ -40,7 +39,7 @@ import FTagList from '~/layouts/components/FTagList.vue';
 .el-header {
     @apply bg-indigo-700;
     height: 64px;
-    position: fixed;
+    // position: fixed;
     width: 100%;
     left: 0;
     top: 0;
@@ -53,6 +52,9 @@ import FTagList from '~/layouts/components/FTagList.vue';
 
 .el-main {
     @apply bg-light-200;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 .fade-leave-to,
 .fade-enter-from {
@@ -64,11 +66,11 @@ import FTagList from '~/layouts/components/FTagList.vue';
 }
 .fade-enter-active,
 .fade-leave-active {
-    transition: all .3s ease;
+    transition: opacity .2s ;
 }
 
-.fade-enter-active {
-    transition-delay: .3s;
-}
+// .fade-enter-active {
+//     transition-delay: .3s;
+// }
 
 </style>

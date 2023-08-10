@@ -1,14 +1,37 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   outline: none;
   /* 隐藏 IE、Edge 和 Firefox 的滚动条 */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  /* IE and Edge */
+  /* -ms-overflow-style: none;   */
+  /* Firefox */
+  /* scrollbar-width: none;   */
 }
-*::-webkit-scrollbar {
-    display: none;
+::-webkit-scrollbar {
+    /* display: none; */
+    width: 4px;
+    height: 6px;
 }
+
+::-webkit-scrollbar-corner {
+  display: block;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-track {
+  border-right-color: transparent;
+  border-left-color: transparent;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 body {
   min-width: 320px;
   min-height: 100vh;
@@ -37,7 +60,12 @@ button {
 li {
   list-style: none;
 }
-
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 @media screen and (max-width: 1920px) {
     html {
       font-size: 16px;
