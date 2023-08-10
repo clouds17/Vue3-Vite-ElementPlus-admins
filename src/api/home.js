@@ -1,3 +1,5 @@
+// 首页统计接口
+
 import request from "~/axios.js";
 
 const URL = {

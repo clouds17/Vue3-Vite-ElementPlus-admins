@@ -1,3 +1,5 @@
+// 管理员及登录退出接口
+
 import request from "~/axios.js";
 
 const URL = {
