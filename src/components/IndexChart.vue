@@ -25,6 +25,8 @@ import { useStore } from "vuex";
 import { useResizeObserver } from '@vueuse/core'
 import * as echarts from 'echarts';
 
+
+
 const store = useStore()
 const currentType = ref('week')
 const typeOptions = [{
@@ -38,11 +40,12 @@ const typeOptions = [{
     value: '近24小时'
 }]
 
+// 切换tag
 const handleChoose = (type) => {
     currentType.value = type
-    console.log(currentType.value)
     getDate(type)
 }
+
 let myChart = null
 onMounted(() => {
     let chartDom = document.getElementById('chart-main');
@@ -109,6 +112,10 @@ const echatRef = ref(null)
 useResizeObserver(echatRef, (entries) => {
     myChart.resize()
 })
+
+    
+
+
 
 </script>
 

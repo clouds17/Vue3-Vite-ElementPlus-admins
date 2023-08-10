@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-row :gutter="20">
-            <template v-if="panels.length == 0">
+            <template v-if="panelsData.length == 0">
                 <el-col :span="6" :offset="0" v-for="i in 4" :key="i">
                     <el-skeleton style="width: 100%" animated loading>
                         <template #template>
@@ -24,7 +24,7 @@
                     </el-skeleton>
                 </el-col>
             </template>
-            <el-col :span="6" :offset="0" v-for="(item, index) in panels" :key="index">
+            <el-col :span="6" :offset="0" v-for="(item, index) in panelsData" :key="index">
                 <el-card shadow="hover" class="border-0">
                     <template #header>
                         <div class="flex items-center justify-between text-sm">
@@ -52,7 +52,10 @@
             <el-col :span="12" :offset="0">
                 <index-chart></index-chart>
             </el-col>
-            <el-col :span="12" :offset="0"></el-col>
+            <el-col :span="12" :offset="0">
+                <index-card title="店铺及商品提示" tip="店铺及商品提示" :resData="goodsData"></index-card>
+                <index-card class=" mt-4" title="交易提示" tip="需要立即处理的订单" :resData="orderData"></index-card>
+            </el-col>
         </el-row>
         
 
@@ -65,19 +68,24 @@ import { useStore } from "vuex";
 import CountTo from '~/components/CountTo.vue'
 import IndexNavs from "~/components/IndexNavs.vue";
 import IndexChart from "~/components/IndexChart.vue";
+import IndexCard from "../components/IndexCard.vue";
+
 
 const store = useStore()
-const panels = ref([])
+const panelsData = ref([])
+const goodsData = ref([])
+const orderData = ref([])
 
 store.dispatch('Statistics1')
     .then(res => {
-        console.log('统计1', res)
-        panels.value = res.panels
+        panelsData.value = res.panels
     })
 
 store.dispatch('Statistics2')
     .then(res => {
-        console.log('统计2', res)
+        console.log(res)
+        goodsData.value = res.goods
+        orderData.value = res.order
     })
 
 
