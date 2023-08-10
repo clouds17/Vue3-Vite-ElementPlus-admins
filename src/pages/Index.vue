@@ -66,9 +66,9 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import CountTo from '~/components/CountTo.vue'
-import IndexNavs from "~/components/IndexNavs.vue";
-import IndexChart from "~/components/IndexChart.vue";
-import IndexCard from "../components/IndexCard.vue";
+import IndexNavs from "~/components/index/IndexNavs.vue";
+import IndexChart from "~/components/index/IndexChart.vue";
+import IndexCard from "~/components/index/IndexCard.vue";
 
 
 const store = useStore()

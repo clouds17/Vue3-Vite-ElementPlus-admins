@@ -1,13 +1,15 @@
 <template>
     <el-aside width="220px" >
         <div class="content">
-            <p v-for="i in 100" :key="i">{{ i }}</p>
+            <aside-list>分类标题</aside-list>
+            <aside-list :active="true">分类标题</aside-list>
         </div>
         <div class="paging">分页</div>
     </el-aside>
 </template>
 
 <script setup>
+import AsideList from "./AsideList.vue";
 
 </script>
 

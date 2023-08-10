@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import ImageAside from "~/components/ImageAside.vue";
-import ImageMain from "~/components/ImageMain.vue";
+import ImageAside from "~/components/image/ImageAside.vue";
+import ImageMain from "~/components/image/ImageMain.vue";
 </script>
 
 <style lang="scss" scoped>
