@@ -20,14 +20,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue"
-import { useStore } from "vuex";
-import { useResizeObserver } from '@vueuse/core'
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { get_statistics3 } from '~/api/home.js';
+import { useResizeObserver } from '@vueuse/core';
 import * as echarts from 'echarts';
 
 
 
-const store = useStore()
 const currentType = ref('week')
 const typeOptions = [{
     type: 'month',
@@ -56,7 +55,8 @@ onMounted(() => {
 })
 function getDate(type = 'week') {
     myChart.showLoading()
-    store.dispatch('Statistics3', {
+    // 获取图标数据
+    get_statistics3({
         type
     })
     .then(res => {
@@ -65,6 +65,8 @@ function getDate(type = 'week') {
     .finally(() => {
         myChart.hideLoading()
     })
+
+
 }
 
 function renderData(data = {}) {

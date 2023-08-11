@@ -3,6 +3,7 @@ export default {
         return {
             // 侧边栏是否折叠
             isCollapse: null,
+            // 侧边栏宽度
             asideWidth: null,
             // 当前菜单路由
             defaultMenuActive: null

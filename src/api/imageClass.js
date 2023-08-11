@@ -46,16 +46,13 @@ const URL = {
 }
 
 
+export const get_imageClass = ({page = 1, limit = 10} = { page: 1, limit: 10 }) => request(URL.IMAGECLASS.replace(':page', page), 'GET', { limit })
 
-export default {
-    imageClass: ({page, limit}) => request(URL.IMAGECLASS.replace(':page', page), 'GET', { limit }),
+export const get_curImageList = ({id, page = 1, limit = 10}) => request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit })
 
-    imageClassId: ({id, page, limit}) => request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit }),
+export const add_imageClass = ({ name, order }) => request(URL.ADD_IMAGECLASS, 'POST', { name, order })
 
-    addImageClass: ({ name, order }) => request(URL.ADD_IMAGECLASS, 'POST', { name, order }),
+export const update_imageClass = ({ id, name, order }) => request(URL.UPDATE_IMAGECLASS.replace(':id', id), 'POST', { name, order })
 
-    updateImageClass: ({ id, name, order }) => request(URL.UPDATE_IMAGECLASS.replace(':id', id), 'POST', { name, order }),
+export const delete_imageClass = ({ id }) => request(URL.DELETE_IMAGECLASS.replace(':id', id), 'POST')
 
-    deleteImageClass: ({ id }) => request(URL.DELETE_IMAGECLASS.replace(':id', id), 'POST'),
-
-}

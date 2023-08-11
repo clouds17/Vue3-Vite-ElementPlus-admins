@@ -64,30 +64,29 @@
 
 <script setup>
 import { ref } from "vue";
-import { useStore } from "vuex";
+import { get_statistics1, get_statistics2} from '~/api/home.js';
 import CountTo from '~/components/CountTo.vue'
 import IndexNavs from "~/components/index/IndexNavs.vue";
 import IndexChart from "~/components/index/IndexChart.vue";
 import IndexCard from "~/components/index/IndexCard.vue";
 
 
-const store = useStore()
 const panelsData = ref([])
 const goodsData = ref([])
 const orderData = ref([])
 
-store.dispatch('Statistics1')
+// 后台首页统计1
+get_statistics1()
     .then(res => {
         panelsData.value = res.panels
     })
-
-store.dispatch('Statistics2')
+    
+// 后台首页统计2
+get_statistics2()
     .then(res => {
-        console.log(res)
         goodsData.value = res.goods
         orderData.value = res.order
     })
-
 
 
 

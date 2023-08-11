@@ -1,4 +1,5 @@
-import Manager_api from '~/api/manager.js';
+import { login_api, logout_api, getInfo, update_password } from '~/api/manager.js';
+
 import { setToken, removeToken } from '~/composables/auth.js'
 
 
@@ -41,7 +42,7 @@ export default {
         // 登录
         Login({commit}, { username, password }) {
             return new Promise((resolve, reject) => {
-                Manager_api.login({
+                login_api({
                     username, 
                     password
                 })
@@ -56,7 +57,7 @@ export default {
         // 退出登录
         Logout({ commit }) {
             return new Promise((resolve, reject) => {
-                Manager_api.logout()
+                logout_api()
                     .then(res => {
                         // 用它是因为怕token过期，还得请求一遍退出登录
                         commit('CLEAR_DATA')
@@ -69,7 +70,7 @@ export default {
         GetInfo({commit}) {
             return new Promise((resolve, reject) => {
                 // 获取用户信息
-                Manager_api.getInfo()
+                getInfo()
                     .then(res => {
                         commit('SET_USERINFO', res)
                         commit('SET_MENUS', res.menus)
@@ -82,7 +83,7 @@ export default {
         // 修改密码
         UpdatePassword({ commit }, {oldpassword, password, repassword}) {
             return new Promise((resolve, reject) => {
-                Manager_api.updatePassword({
+                update_password({
                     oldpassword, 
                     password, 
                     repassword

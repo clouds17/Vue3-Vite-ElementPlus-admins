@@ -16,13 +16,9 @@ const URL = {
     
 }
 
+export const get_statistics1 = () => request(URL.STATISTICS1, 'GET')
 
+export const get_statistics2 = () => request(URL.STATISTICS2, 'GET')
 
-export default {
-    statistics1: () => request(URL.STATISTICS1, 'GET'),
+export const get_statistics3 = ({ type }) => request(URL.STATISTICS3, 'GET', { type })
 
-    statistics2: () => request(URL.STATISTICS2, 'GET'),
-
-    statistics3: ({ type }) => request(URL.STATISTICS3, 'GET', { type }),
-
-}

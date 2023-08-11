@@ -14,13 +14,11 @@ const URL = {
 }
 
 
+export const login_api = ({username, password}) => request(URL.LOGIN, 'POST', {username, password})
 
-export default {
-    login: ({username, password}) => request(URL.LOGIN, 'POST', {username, password}),
+export const logout_api = () => request(URL.LOGOUT, 'POST')
 
-    getInfo: () => request(URL.GETINFO, 'POST'),
-    
-    logout: () => request(URL.LOGOUT, 'POST'),
+export const getInfo = () => request(URL.GETINFO, 'POST')
 
-    updatePassword: ({oldpassword, password, repassword}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
-}
+export const update_password = ({oldpassword, password, repassword}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
+
