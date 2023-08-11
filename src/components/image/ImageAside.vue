@@ -2,7 +2,11 @@
     <el-aside width="220px" v-loading="isLoading">
         <div class="content">
             <template v-for="(item, index) in classList" :key="index">
-                <aside-list :active="activeClassId == item.id">{{ item.name }}</aside-list>
+                <aside-list 
+                    :active="activeClassId == item.id" 
+                    @edit="editClass(item)" 
+                    @delete="deleteClass(item.id)"
+                >{{ item.name }}</aside-list>
             </template>
         </div>
         <div class="paging">
@@ -19,7 +23,7 @@
 
     <form-drawer 
         ref="formDrawerRef"
-        title="新增图片分类"
+        :title="drawerTitle + '图片分类'"
         destroyOnClose
         @submit="handleSubmit"
         @close="handleClose"
@@ -31,138 +35,131 @@
             <el-form-item label="排序" prop="order">
                 <el-input-number v-model="form.order" :min="0" :max="1000" />
             </el-form-item>
+            <el-alert  title="排序值越大越靠前" type="info" show-icon />
         </el-form>
         
     </form-drawer>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import AsideList from '~/components/image/AsideList.vue'
-
-import { get_imageClass } from '~/api/imageClass.js';
+import { get_imageClass, add_imageClass, update_imageClass, delete_imageClass } from '~/api/imageClass.js';
 import FormDrawer from '~/components/FormDrawer.vue';
-
-const {
-    curPage,
-    limit,
-    total,
-    isLoading,
-    classList,
-    activeClassId,
-    getData
-} = useGetData()
-
-const {
-    form,
-    formRef,
-    formRules,
-    handleSubmit,
-    handleClose,
-    formDrawerRef,
-    openDrawer
-} = useAddClass()
-
-
+import { toast } from '~/composables/util.js';
 
 // 获取图片分类数据并渲染等数据
-function useGetData() {
-    // 分页
-    const curPage = ref(1)
-    const limit = ref(10)
-    const total = ref(0)
 
-    const isLoading = ref(false)
-    const classList = ref([])
-    const activeClassId = ref(0)
+// 分页
+const curPage = ref(1)
+const limit = ref(15)
+const total = ref(0)
 
-    function getData(p = null) {
-        if (typeof p == 'number') {
-            curPage.value = p
-        }
-        isLoading.value = true
-        get_imageClass({ 
-            page: curPage.value, 
-            limit: limit.value 
-        })
-        .then(res => {
-            classList.value = res.list
-            activeClassId.value = classList.value[0]?.id || 0
+const isLoading = ref(false)
+const classList = ref([])
+const activeClassId = ref(0)
 
-            total.value = res.totalCount
-        })
-        .finally(()=> {
-            isLoading.value = false
-        })
+// 获取分类数据
+function getData(p = null) {
+    if (typeof p == 'number') {
+        curPage.value = p
     }
-    getData() 
+    isLoading.value = true
+    get_imageClass({ 
+        page: curPage.value, 
+        limit: limit.value 
+    })
+    .then(res => {
+        classList.value = res.list
+        activeClassId.value = classList.value[0]?.id || 0
 
-    return {
-        curPage,
-        limit,
-        total,
-        isLoading,
-        classList,
-        activeClassId,
-        getData
-    }
+        total.value = res.totalCount
+    })
+    .finally(()=> {
+        isLoading.value = false
+    })
 }
-
+getData() 
 
 // 新增图片分类
-function useAddClass() {
 
-    const formDrawerRef = ref(null)
-    // 打开抽屉
-    const openDrawer = () => formDrawerRef.value.open()
+const formDrawerRef = ref(null)
+// 打开抽屉
+const openDrawer = () => formDrawerRef.value.open()
+// 表单数据
+const form = reactive({
+    name: '',
+    order: 50
+})
+// 抽屉展开的数据id
+const curDrawerId = ref(0)
 
-    
+const drawerTitle = computed(() => curDrawerId.value ? '修改' : '新增')
 
-    const form = reactive({
+// 表单验证
+const formRules = {
+    name: [
+        { required: true, message: '图库分类名称不能为空', trigger: 'blur' }
+    ]
+}
+// 表单ref
+const formRef = ref(null)
+// 提交
+const handleSubmit = () => {
+    console.log('formRef',formRef.value)
+    formRef.value.validate((valid) => {
+        if (!valid) return
+        formDrawerRef.value.showLoading()
+
+        const resultFunc = curDrawerId.value ? update_imageClass({id: curDrawerId.value, ...form}) : add_imageClass(form)
+
+        resultFunc
+        .then(res => {
+            toast(drawerTitle.value + '成功')
+            getData(curDrawerId.value ? null : 1)
+            formDrawerRef.value.close()
+        })
+        .finally(() => {
+            formDrawerRef.value.hideLoading()
+        })
+        
+    })
+}
+// 关闭
+const handleClose = () => {
+    curDrawerId.value = 0
+    Object.assign(form, {
         name: '',
         order: 50
     })
+}
 
-    const formRules = {
-        name: [
-            { required: true, message: '图库分类名称不能为空', trigger: 'blur' }
-        ]
-    }
-    const formRef = ref(null)
-    // 提交
-    const handleSubmit = () => {
-        console.log('formRef',formRef.value)
-        formRef.value.validate((valid) => {
-            if (!valid) return
-            formDrawerRef.value.showLoading()
+// 修改分类
+const editClass = (item) => {
+    curDrawerId.value = item.id
+    form.name = item.name
+    form.order = item.order
+    openDrawer()
 
-            setTimeout(() => {
-                console.log('提交成功')
-                formDrawerRef.value.hideLoading()
-            }, 2000);
-        })
-    }
-    // 关闭
-    const handleClose = () => {
-        console.log('关闭')
-    }
-
-    
-
-    return {
-        form,
-        formRef,
-        formRules,
-        handleSubmit,
-        handleClose,
-        formDrawerRef,
-        openDrawer
-    }
+}
+// 删除分类
+const deleteClass = (id) => {
+    isLoading.value = true
+    delete_imageClass({ id })
+    .then(res => {
+        toast('删除成功')
+        getData(null)
+        formDrawerRef.value.close()
+    })
+    .finally(() => {
+        isLoading.value = false
+    })
 }
 
 defineExpose({
     openDrawer
 })
+
 </script>
 
 <style lang="scss" scoped>
