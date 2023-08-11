@@ -48,9 +48,6 @@ const showLoading = () => loading.value = true
 const hideLoading = () => loading.value = false
 
 
-
-
-
 const showDrawer = ref(false)
 
 // 打开
@@ -70,10 +67,6 @@ const handleClose = (done) => {
 function onSubmit() {
     emit('submit')
 }
-
-
-
-
 
 // 向父级暴露一下方法
 defineExpose({
