@@ -4,6 +4,7 @@
             <template v-for="(item, index) in classList" :key="index">
                 <aside-list 
                     :active="activeClassId == item.id" 
+                    @click="changeActiveId(item.id)"
                     @edit="editClass(item)" 
                     @delete="deleteClass(item.id)"
                 >{{ item.name }}</aside-list>
@@ -59,6 +60,8 @@ const isLoading = ref(false)
 const classList = ref([])
 const activeClassId = ref(0)
 
+// defineEmits(['  '])
+
 // 获取分类数据
 function getData(p = null) {
     if (typeof p == 'number') {
@@ -71,8 +74,9 @@ function getData(p = null) {
     })
     .then(res => {
         classList.value = res.list
-        activeClassId.value = classList.value[0]?.id || 0
-
+        if (classList.value[0]) {
+            changeActiveId(classList.value[0].id)
+        }
         total.value = res.totalCount
     })
     .finally(()=> {
@@ -80,6 +84,11 @@ function getData(p = null) {
     })
 }
 getData() 
+const emit = defineEmits(['change'])
+function changeActiveId(id) {
+    activeClassId.value = id
+    emit('change', id)
+}
 
 // 新增图片分类
 
