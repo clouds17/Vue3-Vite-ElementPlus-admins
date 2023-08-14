@@ -1,7 +1,23 @@
 <template>
     <el-main v-loading="isLoading">
         <div class="content">
-            <p v-for="(item, index) in imageList" :key="index">{{ item.url }}</p>
+            <el-row :gutter="10" style="margin: 0 !important;">
+                <el-col :span="6" :offset="0" v-for="(item, index) in imageList" :key="index" class="mb-3">
+                    <el-card shadow="hover" :body-style="{ padding: '0' }">
+                        <div class=" relative flex">
+                            <el-image :src="item.url" fit="cover" :lazy="true" class="w-full h-[150px]"></el-image>
+                            <p class="img-title">{{ item.name }}</p>
+                        </div>
+                        <div class="flex items-center justify-center p-2">
+                            <el-button type="primary" size="small" text @click="">重命名</el-button>
+                            <el-button type="primary" size="small" text @click="">删除</el-button>
+                            
+                        </div>
+                    </el-card>
+                    
+                </el-col>
+            </el-row>
+            
         </div>
         <div class="paging">
             <el-pagination 
@@ -71,7 +87,12 @@ defineExpose({
     @apply flex flex-col;
     .content {
         flex: 1;
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        .img-title {
+            @apply text-sm bg-dark-900 bg-opacity-50 text-light-100 px-2 py-1 truncate absolute bottom-0 left-0 right-0;
+        }
     }
     .paging {
         height: 50px;
