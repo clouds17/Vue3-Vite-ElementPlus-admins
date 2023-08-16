@@ -31,6 +31,15 @@ export function MessageBox(message='提示内容', type='warning', title='', con
     })
 }
 
+// 弹出输入框
+export function showPrompt(message='', value='', title='') {
+  return ElMessageBox.prompt(message, title, {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    inputValue: value
+  })
+}
+
 // 显示全屏loading
 export function showFullLoading() {
     nProgress.start();

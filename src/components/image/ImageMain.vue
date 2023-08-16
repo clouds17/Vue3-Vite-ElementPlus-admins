@@ -16,9 +16,12 @@
                             <p class="img-title">{{ item.name }}</p>
                         </div>
                         <div class="flex items-center justify-center p-2">
-                            <el-button type="primary" size="small" text >重命名</el-button>
-                            <el-button type="primary" size="small" text >删除</el-button>
-                            
+                            <el-button type="primary" size="small" text @click="handle_rename(item)">重命名</el-button>
+                            <el-popconfirm title="是否删除该图片?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(item.id)">
+                                <template #reference>
+                                    <el-button type="primary" size="small" text >删除</el-button>
+                                </template>
+                            </el-popconfirm>
                         </div>
                     </el-card>
                     
@@ -41,8 +44,8 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { get_curImageList } from "~/api/image.js";
-
+import { get_curImageList, update_image_name, delete_image_api } from "~/api/image.js";
+import { showPrompt, toast } from '~/composables/util.js';
 // 分页
 const curPage = ref(1)
 const limit = ref(15)
@@ -67,7 +70,6 @@ function getData(p = null) {
         limit: limit.value 
     })
     .then(res => {
-        console.log('main', res)
         imageList.value = res.list
         total.value = res.totalCount
     })
@@ -77,11 +79,42 @@ function getData(p = null) {
 }
 // getData() 
 
+// 重命名
+const handle_rename = (item) => {
+    showPrompt('重命名', item.name)
+    .then(({ value }) => {
+        isLoading.value = true
+        update_image_name({
+            id: item.id,
+            name: value
+        }).then(res => {
+            getData()
+            toast('重命名成功')
+        }).finally(() => {
+            isLoading.value = false
+        })
+    })
+}
+
+// 删除
+const handleDelete = (id) => {
+    isLoading.value = true
+    delete_image_api({
+        ids: [id]
+    }).then(res => {
+        getData()
+        toast('删除成功')
+    }).finally(() => {
+        isLoading.value = false
+    })
+}
+
 const loadData = (id) => {
     curPage.value = 1
     cur_class_id.value = id
     getData()
 }
+
 
 defineExpose({
     loadData
