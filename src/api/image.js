@@ -11,10 +11,8 @@ const URL = {
      * 
      */
     IMAGECLASS_ID: '/admin/image_class/:id/image/:page',
-
 }
 
 
 export const get_curImageList = ({id, page = 1, limit = 10}) => request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit })
-
 

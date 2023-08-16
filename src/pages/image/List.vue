@@ -6,8 +6,8 @@
                 <el-button type="warning">上传图片</el-button>
             </el-header>
             <el-container>
-                <image-aside ref="imageAsideRef"></image-aside>
-                <image-main></image-main>
+                <image-aside ref="imageAsideRef" @change="aside_completed"></image-aside>
+                <image-main ref="imageMainRef"></image-main>
             </el-container>
         </el-container>
 
@@ -23,6 +23,12 @@ import ImageMain from "~/components/image/ImageMain.vue";
 const imageAsideRef = ref(null)
 const openDrawer = () => {
     imageAsideRef.value.openDrawer()
+}
+
+// 分类加载完成
+const imageMainRef = ref(null)
+const aside_completed = (id) => {
+    imageMainRef.value.loadData(id)
 }
 
 </script>

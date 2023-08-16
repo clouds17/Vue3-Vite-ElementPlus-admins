@@ -65,6 +65,7 @@ const {
     display: flex;
     overflow: hidden;
     margin-bottom: 15px;
+    flex-shrink: 0;
     .el-tabs {
         flex: 1;
         overflow: hidden;
