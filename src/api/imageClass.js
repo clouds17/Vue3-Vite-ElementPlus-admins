@@ -10,14 +10,6 @@ const URL = {
      */
     IMAGECLASS: '/admin/image_class/:page',
 
-     /**
-     * 指定分类下的图片列表
-     * @param (id, page, limit)
-     * id: 图库ID
-     * 
-     */
-    IMAGECLASS_ID: '/admin/image_class/:id/image/:page',
-
     /**
      * 增加图库分类
      * @param (name, order)
@@ -47,8 +39,6 @@ const URL = {
 
 
 export const get_imageClass = ({page = 1, limit = 10} = { page: 1, limit: 10 }) => request(URL.IMAGECLASS.replace(':page', page), 'GET', { limit })
-
-export const get_curImageList = ({id, page = 1, limit = 10}) => request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit })
 
 export const add_imageClass = ({ name, order }) => request(URL.ADD_IMAGECLASS, 'POST', { name, order })
 
