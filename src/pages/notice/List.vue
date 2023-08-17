@@ -44,10 +44,10 @@
         <form-drawer title="添加公告" ref="formDrawerRef" @submit="handleSubmit" @close="closeDrawer">
             <el-form :model="formData" ref="formRef" :rules="rules" label-width="80px" :inline="false" size="normal">
                 <el-form-item label="公告标题" prop="title">
-                    <el-input v-model="formData.title"></el-input>
+                    <el-input v-model="formData.title" placeholder="公告标题"></el-input>
                 </el-form-item>
                 <el-form-item label="公告内容" prop="content">
-                    <el-input v-model="formData.content"></el-input>
+                    <el-input v-model="formData.content" placeholder="公告内容" type="textarea" :rows="5"></el-input>
                 </el-form-item>
             </el-form>
             
@@ -59,9 +59,9 @@
 
 <script setup>
 import { reactive, ref } from "vue"
-import { get_noticeList_api } from '~/api/notice.js'
+import { get_noticeList_api, add_notice_api } from '~/api/notice.js'
 import FormDrawer from "~/components/FormDrawer.vue";
-
+import { toast } from '~/composables/util.js'
 
 const tableData = ref([])
 const isLoading = ref(false)
@@ -94,6 +94,11 @@ const handleDelete = (index, row) => {
     console.log(index, row)
 }
 
+// 切换分页
+const changePage = (e) => {
+    getTableData(e)
+}
+
 // 表单部分
 
 const formDrawerRef = ref(null)
@@ -124,7 +129,17 @@ const closeDrawer = () => {
 const handleSubmit = () => {
     formRef.value.validate(valid => {
         if (!valid) return
-        console.log('submit')
+        formDrawerRef.value.showLoading()
+        add_notice_api(formData)
+            .then(res => {
+                console.log(res)
+                toast('添加成功')
+                getTableData(1)
+                formDrawerRef.value.close()
+            })
+            .finally(() => {
+                formDrawerRef.value.hideLoading()
+            })
     })
 }
 
