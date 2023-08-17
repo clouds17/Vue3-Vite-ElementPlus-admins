@@ -37,7 +37,7 @@ const URL = {
     UPLOAD_IMAGE: '/admin/image/upload'
 
 }
-
+const baseURL = process.env.NODE_ENV === 'development' ? '/api' : 'http://ceshi13.dishait.cn';
 
 export const get_curImageList = ({id, page = 1, limit = 10}) => request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit })
 
@@ -45,5 +45,6 @@ export const delete_image_api = ({ids = []} = {ids: []}) => request(URL.DELETEIM
 
 export const update_image_name = ({id, name = ''}) => request(URL.UPDATE_IMAGE_NAME.replace(':id', id), 'POST', { name })
 
-export const upload_image = ({image_class_id, img}) => request(URL.UPLOAD_IMAGE, 'POST', { image_class_id, img })
+// export const upload_image = ({image_class_id, img}) => request(URL.UPLOAD_IMAGE, 'POST', { image_class_id, img })
 
+export const upload_image = baseURL + URL.UPLOAD_IMAGE

@@ -3,11 +3,11 @@
         <el-container class="bg-white rounded">
             <el-header>
                 <el-button type="primary" @click="openDrawer">新增图片分类</el-button>
-                <el-button type="warning">上传图片</el-button>
+                <el-button type="warning" @click="uploadFile">上传图片</el-button>
             </el-header>
             <el-container>
                 <image-aside ref="imageAsideRef" @change="aside_completed"></image-aside>
-                <image-main ref="imageMainRef"></image-main>
+                <image-main ref="imageMainRef" ></image-main>
             </el-container>
         </el-container>
 
@@ -29,6 +29,9 @@ const openDrawer = () => {
 const imageMainRef = ref(null)
 const aside_completed = (id) => {
     imageMainRef.value.loadData(id)
+}
+const uploadFile = () => {
+    imageMainRef.value.openUpladFile()
 }
 
 </script>

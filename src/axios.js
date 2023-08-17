@@ -45,11 +45,12 @@ instance.interceptors.response.use(function (response) {
     return Promise.reject(error);
   });
 
-function request(url, type = 'GET', data = {}) {
+function request(url, type = 'GET', data = {}, options = {}) {
     return new Promise((resolve, reject) => {
-        let options = {
+        options = {
             url,
-            method: type
+            method: type,
+            ...options
         }
         if (type.toLowerCase() === 'get') {
             options.params = data

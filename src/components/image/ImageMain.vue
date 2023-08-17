@@ -39,6 +39,9 @@
                 @current-change="getData"
             />
         </div>
+
+        <upload-file ref="uploadFileRef" :data="{image_class_id: cur_class_id}" @success="uploadSuccess" ></upload-file>
+
     </el-main>
 </template>
 
@@ -46,6 +49,10 @@
 import { computed, ref } from 'vue';
 import { get_curImageList, update_image_name, delete_image_api } from "~/api/image.js";
 import { showPrompt, toast } from '~/composables/util.js';
+import UploadFile from '~/components/UploadFile.vue';
+
+
+
 // 分页
 const curPage = ref(1)
 const limit = ref(15)
@@ -109,6 +116,14 @@ const handleDelete = (id) => {
     })
 }
 
+const uploadFileRef = ref(null)
+const openUpladFile = () => uploadFileRef.value.open()
+
+const uploadSuccess = () => {
+    toast('上传成功')
+    getData(1)
+}
+
 const loadData = (id) => {
     curPage.value = 1
     cur_class_id.value = id
@@ -117,7 +132,8 @@ const loadData = (id) => {
 
 
 defineExpose({
-    loadData
+    loadData,
+    openUpladFile
 })
 
 </script>
