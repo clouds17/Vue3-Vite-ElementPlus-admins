@@ -11,16 +11,21 @@
                                     fit="cover" 
                                     :lazy="true" 
                                     class="w-full h-[150px]"
-                                    :preview-src-list="imageList_arr"
+                                    :preview-src-list="arr_imgls"
                                     :initial-index="index"
                                 ></el-image>
                                 <p class="img-title">{{ item.name }}</p>
                             </div>
                             <div class="flex items-center justify-center p-2">
-                                <el-button type="primary" size="small" text @click="">重命名</el-button>
-                                <el-button type="primary" size="small" text @click="">删除</el-button>
+                                <el-button type="primary" size="small" text @click="handle_rename(item)">重命名</el-button>
+                                <el-popconfirm title="是否删除该图片?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(item.id)">
+                                    <template #reference>
+                                        <el-button type="primary" size="small" text >删除</el-button>
+                                    </template>
+                                </el-popconfirm>
                             </div>
                         </el-card>
+                        
                     </el-col>
                 </template>
                 <template v-else>
@@ -41,12 +46,19 @@
                 @current-change="getData"
             />
         </div>
+
+        <upload-file ref="uploadFileRef" :data="{image_class_id: cur_class_id}" @success="uploadSuccess" ></upload-file>
+
     </el-main>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { get_curImageList } from "~/api/image.js";
+import { computed, ref } from 'vue';
+import { get_curImageList, update_image_name, delete_image_api } from "~/api/image.js";
+import { showPrompt, toast } from '~/composables/util.js';
+import UploadFile from '~/components/UploadFile.vue';
+
+
 
 // 分页
 const curPage = ref(1)
@@ -58,6 +70,8 @@ const isLoading = ref(false)
 const imageList = ref([])
 // 图片预览的图片数组
 const imageList_arr = ref([])
+
+const arr_imgls = computed(() => imageList.value.map(item => item.url))
 
 const cur_class_id = ref(0)
 
@@ -73,7 +87,6 @@ function getData(p = null) {
         limit: limit.value 
     })
     .then(res => {
-        console.log('main', res)
         imageList.value = res.list
 
         imageList_arr.value = res.list.map(item => item.url)
@@ -85,14 +98,54 @@ function getData(p = null) {
 }
 // getData() 
 
+// 重命名
+const handle_rename = (item) => {
+    showPrompt('重命名', item.name)
+    .then(({ value }) => {
+        isLoading.value = true
+        update_image_name({
+            id: item.id,
+            name: value
+        }).then(res => {
+            getData()
+            toast('重命名成功')
+        }).finally(() => {
+            isLoading.value = false
+        })
+    })
+}
+
+// 删除
+const handleDelete = (id) => {
+    isLoading.value = true
+    delete_image_api({
+        ids: [id]
+    }).then(res => {
+        getData()
+        toast('删除成功')
+    }).finally(() => {
+        isLoading.value = false
+    })
+}
+
+const uploadFileRef = ref(null)
+const openUpladFile = () => uploadFileRef.value.open()
+
+const uploadSuccess = () => {
+    toast('上传成功')
+    getData(1)
+}
+
 const loadData = (id) => {
     curPage.value = 1
     cur_class_id.value = id
     getData()
 }
 
+
 defineExpose({
-    loadData
+    loadData,
+    openUpladFile
 })
 
 </script>

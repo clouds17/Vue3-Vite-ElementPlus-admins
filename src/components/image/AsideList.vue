@@ -5,16 +5,17 @@
             class="ml-auto px-1" 
             text type="primary" 
             size="small"
-            @click="$emit('edit')"
+            @click.stop="$emit('edit')"
         >
             <el-icon :size="13"><Edit/></el-icon>
         </el-button>
-        <el-popconfirm title="是否删除此分类?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="$emit('delete')">
+        <el-popconfirm  title="是否删除此分类?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="$emit('delete')">
             <template #reference>
                 <el-button 
                     class="px-1" 
                     text type="primary" 
                     size="small"
+                    @click.stop=""
                 >
                     <el-icon :size="13"><Close/></el-icon>
                 </el-button>
