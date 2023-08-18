@@ -38,7 +38,7 @@ export const get_noticeList_api = ({ page = 1 } = { page: 1 }) => request(URL.NO
 
 export const add_notice_api = ({ title = '', content = '' } = { title: '', content: '' }) => request(URL.ADD_NOTICE, 'POST', { title, content })
 
-export const update_notice_api = ({id, title = '', content = ''}) => request(URL.UPDATE_NOTICE.replace(':id', id), 'POST', { ntitle, contentame })
+export const update_notice_api = ({id, title = '', content = ''}) => request(URL.UPDATE_NOTICE.replace(':id', id), 'POST', { title, content })
 
 export const delete_notice_api = ({ id }) => request(URL.DELETE_NOTICE.replace(':id', id), 'POST')
 
