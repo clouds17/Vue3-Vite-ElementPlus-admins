@@ -132,6 +132,30 @@ const asyncRoutes = [
         },
         component: () => import('~/pages/coupon/List.vue')
     },
+    { 
+        path: '/manager/list',
+        name: '/manager/list',
+        meta: {
+            title: '管理员管理'
+        },
+        component: () => import('~/pages/manager/List.vue')
+    },
+    { 
+        path: '/access/list',
+        name: '/access/list',
+        meta: {
+            title: '权限管理'
+        },
+        component: () => import('~/pages/access/List.vue')
+    },
+    { 
+        path: '/role/list',
+        name: '/role/list',
+        meta: {
+            title: '角色管理'
+        },
+        component: () => import('~/pages/role/List.vue')
+    },
 ]
 
 
