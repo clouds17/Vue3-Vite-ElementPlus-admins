@@ -1,5 +1,16 @@
 <template>
     <el-card shadow="never" class=" border-0 h-full">
+        <!-- 搜索 -->
+        <el-form :model="searchForm" :inline="true"> 
+            <el-form-item label="关键词">
+                <el-input class="w-[300px]" v-model="searchForm.keyword" clearable  placeholder="请输入管理员昵称搜索"></el-input>
+            </el-form-item>
+            <el-form-item class="flex items-center justify-end">
+                <el-button  type="primary" @click="getTableData(1)">搜索</el-button>
+                <el-button  @click="resetSearchForm">重置</el-button>
+            </el-form-item>
+        </el-form>
+        
         <!-- 新增|刷新 -->
         <div class="flex items-center justify-between mb-4">
             <el-button type="primary" size="default" @click="openDrawer">新增</el-button>
@@ -87,12 +98,21 @@ import { get_manager_list, add_manager_api, update_manager_api, delete_manager_a
 import FormDrawer from "~/components/FormDrawer.vue";
 import { toast } from '~/composables/util.js'
 
+// 搜索关键词
+const searchForm = reactive({
+    keyword: ''
+})
+// 重置搜索框
+const resetSearchForm = () => {
+    searchForm.keyword = ''
+    getTableData(1)
+}
+
 const tableData = ref([])
 const isLoading = ref(false)
 const page = ref(1)
 const limit = ref(10)
 const totalCount = ref(0)
-const keyword = ref(null)
 // 获取表单数据
 function getTableData(p = null) {
     if (typeof p == 'number') {
@@ -102,7 +122,7 @@ function getTableData(p = null) {
     get_manager_list({
         page: page.value,
         limit: limit.value,
-        keyword: keyword.value
+        keyword: searchForm.keyword
     }).then(res => {
         console.log(res.list)
         tableData.value = res.list
@@ -114,6 +134,7 @@ function getTableData(p = null) {
 }
 
 getTableData()
+
 
 // switch切换
 const switchChange = (e) => {
