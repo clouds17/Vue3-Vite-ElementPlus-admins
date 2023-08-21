@@ -67,8 +67,21 @@ export const getInfo = () => request(URL.GETINFO, 'POST')
 
 export const update_password = ({oldpassword, password, repassword}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
 
-export const get_manager_list = ({ page = 1, limit = 10, keyword = '' } = { page: 1, limit: 10, keyword: '' }) => 
-    request(URL.GET_MANAGER_LIST.replace(':page', page), 'GET', { limit, keyword })
+export const get_manager_list = ({ page = 1, limit = 10, keyword = '' } = { page: 1, limit: 10, keyword: '' }) => {
+    return new Promise((resolve, reject) => {
+        request(URL.GET_MANAGER_LIST.replace(':page', page), 'GET', { limit, keyword })
+            .then(res => {
+                res.list.map(item => {
+                    item.isLoading = false
+                    return item
+                })
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
 
 
 export const add_manager_api = 

@@ -40,28 +40,33 @@
             <el-table-column  label="状态" width="170" >
                 <template #default="{ row }">
                     <el-switch 
+                        :disabled="row.super == 1"
                         :modelValue="row.status"
                         :active-value="1"
                         :inactive-value="0"
-                        @change="switchChange"
+                        :loading="row.isLoading"
+                        @change="switchChange($event, row)"
                     />
                 </template>
             </el-table-column>
             <el-table-column  label="操作" width="180" align="center">
                 <template #default="scope">
-                    <el-button 
-                        size="small" 
-                        type="primary"
-                        @click="handleEdit(scope.$index, scope.row)"
-                    >修改</el-button>
-                    <el-popconfirm  title="是否删除该管理员?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(scope.row.id)">
-                        <template #reference>
-                            <el-button
-                                size="small"
-                                type="danger"
-                            >删除</el-button>
-                        </template>
-                    </el-popconfirm>
+                    <small v-if="scope.row.super == 1" class="text-gray-500">暂无操作</small>
+                    <div v-else>
+                        <el-button 
+                            size="small" 
+                            type="primary"
+                            @click="handleEdit(scope.$index, scope.row)"
+                        >修改</el-button>
+                        <el-popconfirm  title="是否删除该管理员?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(scope.row.id)">
+                            <template #reference>
+                                <el-button
+                                    size="small"
+                                    type="danger"
+                                >删除</el-button>
+                            </template>
+                        </el-popconfirm>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>
@@ -137,8 +142,17 @@ getTableData()
 
 
 // switch切换
-const switchChange = (e) => {
-    console.log('e', e)
+const switchChange = (status, row) => {
+    row.isLoading = true
+    update_manager_status({
+        id: row.id,
+        status: status
+    }).then(res => {
+        toast('修改状态成功')
+        row.status = status
+    }).finally(() => {
+        row.isLoading = false
+    })
 }
 
 // 切换分页
