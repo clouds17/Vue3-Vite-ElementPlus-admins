@@ -152,6 +152,7 @@ const emit = defineEmits(['choose'])
 const checkedImage = computed(() => {
     return imageList.value.filter(item => item.checked)
 })
+// 切换复选框
 const handleChooseChange = (item) => {
     if (item.checked && checkedImage.value.length > 1) {
         item.checked = false
@@ -161,10 +162,17 @@ const handleChooseChange = (item) => {
     }
     emit('choose', checkedImage.value)
 }
+// 清空选中的复选框
+const clearChooseBox = () => {
+    imageList.value.forEach(item => {
+        item.checked = false
+    })
+}
 
 defineExpose({
     loadData,
-    openUpladFile
+    openUpladFile,
+    clearChooseBox
 })
 
 </script>

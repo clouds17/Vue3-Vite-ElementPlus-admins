@@ -1,6 +1,9 @@
 <template>
-    <div class="choose-image-btn" @click="open">
-        <el-icon class="text-gray-500"><Plus /></el-icon>
+    <div class="flex items-center">
+        <el-image v-if="modelValue" :src="modelValue" fit="cover" :lazy="true" class="border w-[100px] h-[100px] rounded mr-3"></el-image>
+        <div class="choose-image-btn" @click="open">
+            <el-icon class="text-gray-500"><Plus /></el-icon>
+        </div>
     </div>
     <el-dialog
         title="选择图片"
@@ -21,8 +24,8 @@
         </el-container>
         <template #footer>
             <span>
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="submit">OK</el-button>
+                <el-button @click="close">取消</el-button>
+                <el-button type="primary" @click="submit">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -35,9 +38,7 @@ import ImageAside from "~/components/image/ImageAside.vue";
 import ImageMain from "~/components/image/ImageMain.vue";
 
 
-const dialogVisible = ref(false)
 
-const open = () => dialogVisible.value = true
 
 const imageAsideRef = ref(null)
 const openDrawer = () => {
@@ -53,13 +54,33 @@ const uploadFile = () => {
     imageMainRef.value.openUpladFile()
 }
 
+// dialog框打开和关闭
+const dialogVisible = ref(false)
+
+const open = () => dialogVisible.value = true
+const close = () => {
+    dialogVisible.value = false
+    imageMainRef.value.clearChooseBox()
+}
+
 // 选中了图片
+let urls = []
 const imageChoose = (item) => {
+    urls = item.map(v => v.url)
     console.log('选择', item)
 }
 
+defineProps({
+    modelValue: [String, Array]
+})
+const emit = defineEmits(['update:modelValue'])
+
 const submit = () => {
     console.log('提交')
+    if (urls.length) {
+        emit('update:modelValue', urls[0])
+    }
+    close()
 }
 
 

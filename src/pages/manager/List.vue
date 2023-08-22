@@ -84,7 +84,7 @@
         <form-drawer :title="drawerTitle + '管理员'" ref="formDrawerRef" @submit="handleSubmit" @close="closeDrawer">
             <el-form :model="formData" ref="formRef" :rules="rules" label-width="80px" :inline="false" size="default">
                 <el-form-item label="头像" prop="avatar">
-                    <choose-image></choose-image>
+                    <choose-image v-model="formData.avatar"></choose-image>
                 </el-form-item>
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
