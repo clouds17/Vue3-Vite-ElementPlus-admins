@@ -39,7 +39,20 @@ const URL = {
 }
 const baseURL = process.env.NODE_ENV === 'development' ? '/api' : 'http://ceshi13.dishait.cn';
 
-export const get_curImageList = ({id, page = 1, limit = 10}) => request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit })
+export const get_curImageList = ({id, page = 1, limit = 10}) => {
+    return new Promise((resolve, reject) => {
+        request(URL.IMAGECLASS_ID.replace(':id', id).replace(':page', page), 'GET', { limit })
+            .then(res => {
+                res.list = res.list.map(item => {
+                    item.checked = false
+                    return item
+                })
+                res.urlList = res.list.map(item => item.url)
+                resolve(res)
+            })
+            .catch(err => reject(err))
+    })
+}
 
 export const delete_image_api = ({ids = []} = {ids: []}) => request(URL.DELETEIMAGE, 'POST', { ids })
 

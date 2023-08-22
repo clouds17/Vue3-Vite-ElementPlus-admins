@@ -36,7 +36,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="role.name" label="所属管理员"  align="center" />
+            <el-table-column prop="role.name" label="所属角色"  align="center" />
             <el-table-column  label="状态" width="170" >
                 <template #default="{ row }">
                     <el-switch 
@@ -58,7 +58,7 @@
                             type="primary"
                             @click="handleEdit(scope.$index, scope.row)"
                         >修改</el-button>
-                        <el-popconfirm  title="是否删除该管理员?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(scope.row.id)">
+                        <el-popconfirm  title="是否删除该角色?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(scope.row.id)">
                             <template #reference>
                                 <el-button
                                     size="small"
@@ -83,17 +83,8 @@
 
         <form-drawer :title="drawerTitle + '管理员'" ref="formDrawerRef" @submit="handleSubmit" @close="closeDrawer">
             <el-form :model="formData" ref="formRef" :rules="rules" label-width="80px" :inline="false" size="default">
-                <el-form-item label="头像" >
-                    <el-upload
-                        class="avatar-uploader"
-                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
-                    >
-                        <img v-if="formData.avatar" :src="formData.avatar" class="avatar" />
-                        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-                    </el-upload>
+                <el-form-item label="头像" prop="avatar">
+                    <choose-image></choose-image>
                 </el-form-item>
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
@@ -101,19 +92,17 @@
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="formData.password" placeholder="请输入密码" showPassword></el-input>
                 </el-form-item>
-                <el-form-item label="角色" >
+                <el-form-item label="角色" prop="role_id">
                     <el-select v-model="formData.role_id" placeholder="请选择角色" clearable filterable >
                         <el-option label="--请选择角色--" value="--" disabled />
-                        <el-option label="开发" value="shanghai" />
-                        <el-option label="测试" value="beijing" />
+                        <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id" />
                     </el-select>
                 </el-form-item>
-                <el-form-item label="是否启用" >
+                <el-form-item label="是否启用" prop="status">
                     <el-switch 
-                        :modelValue="formData.status"
+                        v-model="formData.status"
                         :active-value="1"
                         :inactive-value="0"
-                        @change=""
                     />
                 </el-form-item>
                 
@@ -129,6 +118,7 @@
 import { reactive, ref, computed } from 'vue';
 import { get_manager_list, add_manager_api, update_manager_api, delete_manager_api, update_manager_status } from '~/api/manager.js'
 import FormDrawer from "~/components/FormDrawer.vue";
+import ChooseImage from '~/components/ChooseImage.vue'
 import { toast } from '~/composables/util.js'
 
 // 搜索关键词
@@ -140,7 +130,7 @@ const resetSearchForm = () => {
     searchForm.keyword = ''
     getTableData(1)
 }
-
+const roles = ref([])
 const tableData = ref([])
 const isLoading = ref(false)
 const page = ref(1)
@@ -157,7 +147,7 @@ function getTableData(p = null) {
         limit: limit.value,
         keyword: searchForm.keyword
     }).then(res => {
-        console.log(res.list)
+        roles.value = res.roles || []
         tableData.value = res.list
         totalCount.value = res.totalCount
     }).finally(() => {
@@ -198,7 +188,7 @@ const formData = reactive({
     username: '',
     password: '',
     role_id: '',
-    status: 0,
+    status: 1,
     avatar: ''
 })
 
@@ -219,7 +209,7 @@ const closeDrawer = () => {
         username: '',
         password: '',
         role_id: '',
-        status: 0,
+        status: 1,
         avatar: ''
     })
 }

@@ -92,5 +92,8 @@ defineExpose({
         margin-top: 30px;
         @apply flex items-center;
     }
+    &:deep(.el-form-item .el-form-item ) {
+        margin-bottom: 18px !important; 
+    }
 }
 </style>
