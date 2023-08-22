@@ -33,7 +33,8 @@ const URL = {
 
     /**
      * 修改管理员
-     * @param(username, password, role_id, status, avatar)
+     * @param(id, username, password, role_id, status, avatar)
+     * id: 管理员id
      * username: 用户名
      * password: 密码
      * role_id: 角色ID

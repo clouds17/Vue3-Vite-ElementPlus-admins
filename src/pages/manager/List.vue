@@ -81,14 +81,42 @@
             @current-change="changePage" />
 
 
-        <form-drawer :title="drawerTitle + '公告'" ref="formDrawerRef" @submit="handleSubmit" @close="closeDrawer">
+        <form-drawer :title="drawerTitle + '管理员'" ref="formDrawerRef" @submit="handleSubmit" @close="closeDrawer">
             <el-form :model="formData" ref="formRef" :rules="rules" label-width="80px" :inline="false" size="default">
-                <el-form-item label="公告标题" prop="title">
-                    <el-input v-model="formData.title" placeholder="公告标题"></el-input>
+                <el-form-item label="头像" >
+                    <el-upload
+                        class="avatar-uploader"
+                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload"
+                    >
+                        <img v-if="formData.avatar" :src="formData.avatar" class="avatar" />
+                        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+                    </el-upload>
                 </el-form-item>
-                <el-form-item label="公告内容" prop="content">
-                    <el-input v-model="formData.content" placeholder="公告内容" type="textarea" :rows="5"></el-input>
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="formData.password" placeholder="请输入密码" showPassword></el-input>
+                </el-form-item>
+                <el-form-item label="角色" >
+                    <el-select v-model="formData.role_id" placeholder="请选择角色" clearable filterable >
+                        <el-option label="--请选择角色--" value="--" disabled />
+                        <el-option label="开发" value="shanghai" />
+                        <el-option label="测试" value="beijing" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="是否启用" >
+                    <el-switch 
+                        :modelValue="formData.status"
+                        :active-value="1"
+                        :inactive-value="0"
+                        @change=""
+                    />
+                </el-form-item>
+                
             </el-form>
             
         </form-drawer>
@@ -167,16 +195,19 @@ const formDrawerRef = ref(null)
 const drawerTitle = computed(() => editId.value == 0 ? '添加' : '修改')
 const formRef = ref(null)
 const formData = reactive({
-    title: '',
-    content: ''
+    username: '',
+    password: '',
+    role_id: '',
+    status: 0,
+    avatar: ''
 })
 
 const rules = {
-    title: [
-        { required: true, message: '请填写公告标题', trigger: 'blur' }
+    username: [
+        { required: true, message: '请填写用户名', trigger: 'blur' }
     ],
-    content: [
-        { required: true, message: '请填写公告内容', trigger: 'blur' }
+    password: [
+        { required: true, message: '请填写密码', trigger: 'blur' }
     ]
 }
 // 打开抽屉
@@ -185,8 +216,11 @@ const openDrawer = () => formDrawerRef.value.open()
 const closeDrawer = () => {
     editId.value = 0
     Object.assign(formData, {
-        title: '',
-        content: ''
+        username: '',
+        password: '',
+        role_id: '',
+        status: 0,
+        avatar: ''
     })
 }
 // 提交
@@ -196,8 +230,8 @@ const handleSubmit = () => {
         formDrawerRef.value.showLoading()
 
         const resultFunc = editId.value == 0 ? 
-            add_notice_api(formData) : 
-            update_notice_api({
+            add_manager_api(formData) : 
+            update_manager_api({
                 id: editId.value,
                 ...formData
             })
@@ -226,13 +260,13 @@ const handleEdit = (index, row) => {
 // 删除
 const handleDelete = (id) => {
     isLoading.value = true
-    delete_notice_api({ id })
+    delete_manager_api({ id })
     .then(res => {
         toast('删除成功')
         getTableData()
     })
     .finally(() => {
-        isLoading.value = false
+        isLoading.value = false 
     })
 }
 
