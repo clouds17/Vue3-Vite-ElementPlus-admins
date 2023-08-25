@@ -82,7 +82,7 @@
 
 
         <form-drawer :title="drawerTitle + '管理员'" ref="formDrawerRef" @submit="handleSubmit" @close="closeDrawer">
-            <el-form :model="formData" ref="formRef" :rules="rules" label-width="80px" :inline="false" size="default">
+            <el-form :model="formData" ref="formRef" :rules="formRules" label-width="80px" :inline="false" size="default">
                 <el-form-item label="头像" prop="avatar">
                     <choose-image v-model="formData.avatar"></choose-image>
                 </el-form-item>
@@ -115,150 +115,72 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed } from 'vue';
+import { ref } from 'vue';
 import { get_manager_list, add_manager_api, update_manager_api, delete_manager_api, update_manager_status } from '~/api/manager.js'
 import FormDrawer from "~/components/FormDrawer.vue";
 import ChooseImage from '~/components/ChooseImage.vue'
-import { toast } from '~/composables/util.js'
 
-// 搜索关键词
-const searchForm = reactive({
-    keyword: ''
-})
-// 重置搜索框
-const resetSearchForm = () => {
-    searchForm.keyword = ''
-    getTableData(1)
-}
+import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
+
 const roles = ref([])
-const tableData = ref([])
-const isLoading = ref(false)
-const page = ref(1)
-const limit = ref(10)
-const totalCount = ref(0)
-// 获取表单数据
-function getTableData(p = null) {
-    if (typeof p == 'number') {
-        page.value = p
-    }
-    isLoading.value = true
-    get_manager_list({
-        page: page.value,
-        limit: limit.value,
-        keyword: searchForm.keyword
-    }).then(res => {
+
+const {
+    searchForm,
+    resetSearchForm,
+    tableData,
+    isLoading,
+    page,
+    limit,
+    totalCount,
+    getTableData,
+    changePage,
+    handleDelete,
+    switchChange
+} = useInitTable({
+    getTableApi: get_manager_list,
+    searchForm: {
+        keyword: ''
+    },
+    onGetListSuccess: (res) => {
         roles.value = res.roles || []
         tableData.value = res.list
         totalCount.value = res.totalCount
-    }).finally(() => {
-        isLoading.value = false
-    })
-    
-}
-
-getTableData()
-
-
-// switch切换
-const switchChange = (status, row) => {
-    row.isLoading = true
-    update_manager_status({
-        id: row.id,
-        status: status
-    }).then(res => {
-        toast('修改状态成功')
-        row.status = status
-    }).finally(() => {
-        row.isLoading = false
-    })
-}
-
-// 切换分页
-const changePage = (e) => {
-    getTableData(e)
-}
-
-// 表单部分
-
-const editId = ref(0)
-const formDrawerRef = ref(null)
-const drawerTitle = computed(() => editId.value == 0 ? '添加' : '修改')
-const formRef = ref(null)
-const formData = reactive({
-    username: '',
-    password: '',
-    role_id: '',
-    status: 1,
-    avatar: ''
+    },
+    deleteApi: delete_manager_api,
+    updateStatusApi: update_manager_status
 })
 
-const rules = {
-    username: [
-        { required: true, message: '请填写用户名', trigger: 'blur' }
-    ],
-    password: [
-        { required: true, message: '请填写密码', trigger: 'blur' }
-    ]
-}
-// 打开抽屉
-const openDrawer = () => formDrawerRef.value.open()
-// 关闭抽屉
-const closeDrawer = () => {
-    editId.value = 0
-    Object.assign(formData, {
+// 表单部分
+const {
+    formDrawerRef,
+    drawerTitle,
+    formRef,
+    formData,
+    formRules,
+    openDrawer,
+    closeDrawer,
+    handleSubmit,
+    handleEdit
+} = useManipulateTable({
+    formData: {
         username: '',
         password: '',
         role_id: '',
         status: 1,
         avatar: ''
-    })
-}
-// 提交
-const handleSubmit = () => {
-    formRef.value.validate(valid => {
-        if (!valid) return
-        formDrawerRef.value.showLoading()
-
-        const resultFunc = editId.value == 0 ? 
-            add_manager_api(formData) : 
-            update_manager_api({
-                id: editId.value,
-                ...formData
-            })
-
-            resultFunc
-            .then(res => {
-                toast(drawerTitle.value + '成功')
-                getTableData(editId.value == 0 ? 1 : null)
-                
-                formDrawerRef.value.close()
-            })
-            .finally(() => {
-                formDrawerRef.value.hideLoading()
-            })
-    })
-}
-
-// 编辑
-const handleEdit = (index, row) => {
-    for (const key in formData) {
-        formData[key] = row[key]
-    }
-    editId.value = row.id
-    openDrawer()
-}
-// 删除
-const handleDelete = (id) => {
-    isLoading.value = true
-    delete_manager_api({ id })
-    .then(res => {
-        toast('删除成功')
-        getTableData()
-    })
-    .finally(() => {
-        isLoading.value = false 
-    })
-}
+    },
+    formRules: {
+        username: [
+            { required: true, message: '请填写用户名', trigger: 'blur' }
+        ],
+        password: [
+            { required: true, message: '请填写密码', trigger: 'blur' }
+        ]
+    },
+    addApi: add_manager_api,
+    updateApi: update_manager_api,
+    getTableData
+})
 
 </script>
 
