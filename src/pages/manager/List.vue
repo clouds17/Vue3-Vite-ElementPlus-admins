@@ -12,14 +12,8 @@
         </el-form>
         
         <!-- 新增|刷新 -->
-        <div class="flex items-center justify-between mb-4">
-            <el-button type="primary" size="default" @click="openDrawer">新增</el-button>
-            <el-tooltip content="刷新数据" placement="top" effect="dark">
-                <el-button type="text" @click="getTableData">
-                    <el-icon :size="18"><Refresh /></el-icon>
-                </el-button>
-            </el-tooltip>
-        </div>
+        <table-list-header @create="openDrawer" @refresh="getTableData"></table-list-header>
+
         <el-table :data="tableData" stripe style="width: 100%" v-loading="isLoading">
             <el-table-column label="管理员" width="300">
                 <template #default="{ row }">
@@ -119,6 +113,7 @@ import { ref } from 'vue';
 import { get_manager_list, add_manager_api, update_manager_api, delete_manager_api, update_manager_status } from '~/api/manager.js'
 import FormDrawer from "~/components/FormDrawer.vue";
 import ChooseImage from '~/components/ChooseImage.vue'
+import TableListHeader from '~/components/TableListHeader.vue';
 
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
 

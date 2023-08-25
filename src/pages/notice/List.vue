@@ -2,14 +2,8 @@
     <div class="main-container">
         <el-card shadow="never" class=" border-0 h-full">
             <!-- 新增|刷新 -->
-            <div class="flex items-center justify-between mb-4">
-                <el-button type="primary" size="default" @click="openDrawer">新增</el-button>
-                <el-tooltip content="刷新数据" placement="top" effect="dark">
-                    <el-button type="text" @click="getTableData">
-                        <el-icon :size="18"><Refresh /></el-icon>
-                    </el-button>
-                </el-tooltip>
-            </div>
+            <table-list-header @create="openDrawer" @refresh="getTableData"></table-list-header>
+
             <el-table :data="tableData" stripe style="width: 100%" v-loading="isLoading">
                 <el-table-column prop="title" label="公告标题"  />
                 <el-table-column prop="create_time" label="发布事件" width="380" />
@@ -62,7 +56,7 @@
 <script setup>
 import { get_noticeList_api, add_notice_api, delete_notice_api, update_notice_api } from '~/api/notice.js'
 import FormDrawer from "~/components/FormDrawer.vue";
-
+import TableListHeader from '~/components/TableListHeader.vue';
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
 
 const {
