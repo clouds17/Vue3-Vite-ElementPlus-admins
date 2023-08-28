@@ -62,7 +62,19 @@ const URL = {
 
 }
 
-export const get_roleList_api = ({ page = 1 } = { page: 1 }) => request(URL.ROLE_LIST.replace(':page', page), 'GET')
+export const get_roleList_api = ({ page = 1 } = { page: 1 }) => {
+    return new Promise((resolve, reject) => {
+        request(URL.ROLE_LIST.replace(':page', page), 'GET')
+        .then(res => {
+            res.list.map(item => {
+                item.isLoading = false
+                return item
+            })
+            resolve(res)
+        })
+        .catch(err => reject(err))
+    })
+} 
 
 export const add_role_api = ({ name = '', status = 1, desc = '' } = { name: '', status: 1, desc: '' }) => request(URL.ADD_ROLE, 'POST', { name, status, desc })
 
