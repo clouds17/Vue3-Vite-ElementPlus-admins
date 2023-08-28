@@ -13,7 +13,7 @@
         
         <!-- 新增|刷新 -->
         <table-list-header @create="openDrawer" @refresh="getTableData"></table-list-header>
-        
+
         <el-table :data="tableData" stripe style="width: 100%" v-loading="isLoading">
             <el-table-column label="管理员" width="300">
                 <template #default="{ row }">
@@ -50,7 +50,7 @@
                         <el-button 
                             size="small" 
                             type="primary"
-                            @click="handleEdit(scope.$index, scope.row)"
+                            @click="handleEdit(scope.row)"
                         >修改</el-button>
                         <el-popconfirm  title="是否删除该角色?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(scope.row.id)">
                             <template #reference>
