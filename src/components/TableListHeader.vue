@@ -13,3 +13,8 @@
 <script setup>
 defineEmits(['create', 'refresh'])
 </script>
+
+
+<style lang="scss" scoped>
+
+</style>

@@ -160,7 +160,7 @@ export function useManipulateTable(options = {}) {
     }
     
     // 编辑
-    const handleEdit = (index, row) => {
+    const handleEdit = (row) => {
         for (const key in formData) {
             formData[key] = row[key]
         }
