@@ -23,6 +23,7 @@
                         <el-button 
                             size="small" 
                             type="primary"
+                            @click="openSetRoleForm(scope.row)"
                         >配置权限</el-button>
                         <el-button 
                             size="small" 
@@ -71,13 +72,20 @@
                 
             </form-drawer>
 
+            <!-- 配置权限 -->
+            <form-drawer title="配置权限" ref="setRoleFormDrawerRef" @submit="handleSetRoleSubmit" @close="closeSetRoleDrawer">
+                <el-tree-v2 :data="ruleList" :props="defaultProps" show-checkbox :height="treeHeight" node-key="id" :default-expanded-keys="defaultExpandedKeys" />         
+            </form-drawer>
+
         </el-card>
     </div>
     
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { get_roleList_api, add_role_api, delete_role_api, update_role_api, update_role_status } from '~/api/role.js'
+import { get_ruleList_api } from '~/api/rule.js'
 import FormDrawer from "~/components/FormDrawer.vue";
 import TableListHeader from '~/components/TableListHeader.vue';
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
@@ -130,6 +138,35 @@ const {
 })
 
 
+// 权限配置
+const setRoleFormDrawerRef = ref([])
+
+
+const defaultProps = {
+  children: 'child',
+  label: 'name',
+}
+const ruleList = ref([])
+const treeHeight = ref(0)
+// 默认展开的节点的 key 的数组
+const defaultExpandedKeys = ref([])
+// 打开
+const openSetRoleForm = (data) => {
+    treeHeight.value = window.innerHeight - 200
+    get_ruleList_api().then(res => {
+        ruleList.value = res.list
+        defaultExpandedKeys.value = res.list.map(v => v.id)
+        setRoleFormDrawerRef.value.open()
+    })
+}
+// 提交
+const handleSetRoleSubmit = () => {
+    console.log('handleSetRoleSubmit')
+}
+// 关闭
+const closeSetRoleDrawer = () => {
+    console.log('closeSetRoleDrawer')
+}
 </script>
 
 <style lang="scss" scoped>
