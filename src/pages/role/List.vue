@@ -203,6 +203,7 @@ const closeSetRoleDrawer = () => {
 
 // 提交
 const handleSetRoleSubmit = () => {
+    setRoleFormDrawerRef.value.showLoading()
     // 返回目前被选中的节点的 key 所组成的数组
     const checkedKeys = treeV2Ref.value.getCheckedKeys()
     // 返回目前半选中的节点的 key 所组成的数组, 就是子节点没有全选的父节点
@@ -215,6 +216,8 @@ const handleSetRoleSubmit = () => {
         setRoleFormDrawerRef.value.close()
         toast('配置权限成功')
         getTableData()
+    }).finally(() => {
+        setRoleFormDrawerRef.value.hideLoading()
     })
 
 }
