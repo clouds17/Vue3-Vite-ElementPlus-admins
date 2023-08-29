@@ -58,7 +58,7 @@ const URL = {
             "rule_ids": [ 5, 10, 174, 175, 176 ]
         }
      */
-     SET_RULES: '/admin/role/set_rules',
+     SET_ROLE_RULES: '/admin/role/set_rules',
 
 }
 
@@ -83,4 +83,7 @@ export const update_role_api = ({id, name = '', status = 1, desc = ''}) => reque
 export const delete_role_api = ({ id }) => request(URL.DELETE_ROLE.replace(':id', id), 'POST')
 
 export const update_role_status = ({ id, status = 1 }) => request(URL.UPDATE_ROLE_STATUS.replace(':id', id), 'POST', { status })
+
+export const set_role_rules = ({ id, rule_ids = [] }) => request(URL.SET_ROLE_RULES, 'POST', { id, rule_ids })
+
 

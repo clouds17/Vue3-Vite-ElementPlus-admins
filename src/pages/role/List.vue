@@ -74,7 +74,25 @@
 
             <!-- 配置权限 -->
             <form-drawer title="配置权限" ref="setRoleFormDrawerRef" @submit="handleSetRoleSubmit" @close="closeSetRoleDrawer">
-                <el-tree-v2 :data="ruleList" :props="defaultProps" show-checkbox :height="treeHeight" node-key="id" :default-expanded-keys="defaultExpandedKeys" />         
+                <el-tree-v2 
+                    ref="treeV2Ref" 
+                    :data="ruleList" 
+                    :props="defaultProps" 
+                    show-checkbox 
+                    :height="treeHeight" 
+                    :check-strictly="checkStrictly"
+                    node-key="id" 
+                    :default-expanded-keys="defaultExpandedKeys" 
+                >
+                    <template #default="{ data }">
+                        <div class="flex items-center">
+                            <el-tag :type="data.menu ? '' : 'info'" size="small"  >
+                                {{ data.menu ? '菜单' : '权限' }}
+                            </el-tag>
+                            <span class="ml-2 text-sm">{{ data.name }}</span>
+                        </div>
+                    </template>
+                </el-tree-v2>         
             </form-drawer>
 
         </el-card>
@@ -84,7 +102,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { get_roleList_api, add_role_api, delete_role_api, update_role_api, update_role_status } from '~/api/role.js'
+import { toast } from '~/composables/util.js';
+import { get_roleList_api, add_role_api, delete_role_api, update_role_api, update_role_status, set_role_rules } from '~/api/role.js'
 import { get_ruleList_api } from '~/api/rule.js'
 import FormDrawer from "~/components/FormDrawer.vue";
 import TableListHeader from '~/components/TableListHeader.vue';
@@ -146,27 +165,60 @@ const defaultProps = {
   children: 'child',
   label: 'name',
 }
+// 角色权限列表
 const ruleList = ref([])
 const treeHeight = ref(0)
 // 默认展开的节点的 key 的数组
 const defaultExpandedKeys = ref([])
+// 选中的角色ID
+const roleId = ref(0)
+const treeV2Ref = ref(null)
+// 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法
+const checkStrictly = ref(false)
 // 打开
 const openSetRoleForm = (data) => {
+    console.log('data.rules', data.rules)
     treeHeight.value = window.innerHeight - 200
+    roleId.value = data.id
+    checkStrictly.value = true
     get_ruleList_api().then(res => {
         ruleList.value = res.list
         defaultExpandedKeys.value = res.list.map(v => v.id)
         setRoleFormDrawerRef.value.open()
+        // 通过 keys 设置目前勾选的节点
+        setTimeout(() => {
+            treeV2Ref.value.setCheckedKeys(data.rules.map(v => v.id))
+            checkStrictly.value = false
+        }, 100);
     })
-}
-// 提交
-const handleSetRoleSubmit = () => {
-    console.log('handleSetRoleSubmit')
 }
 // 关闭
 const closeSetRoleDrawer = () => {
-    console.log('closeSetRoleDrawer')
+    ruleList.value = []
+    treeHeight.value = 0
+    roleId.value = 0
 }
+
+
+
+// 提交
+const handleSetRoleSubmit = () => {
+    // 返回目前被选中的节点的 key 所组成的数组
+    const checkedKeys = treeV2Ref.value.getCheckedKeys()
+    // 返回目前半选中的节点的 key 所组成的数组, 就是子节点没有全选的父节点
+    const halfCheckedKeys = treeV2Ref.value.getHalfCheckedKeys()
+    console.log('选择', [...checkedKeys, ...halfCheckedKeys])
+    set_role_rules({
+        id: roleId.value,
+        rule_ids: [...checkedKeys, ...halfCheckedKeys]
+    }).then(res => {
+        setRoleFormDrawerRef.value.close()
+        toast('配置权限成功')
+        getTableData()
+    })
+
+}
+
 </script>
 
 <style lang="scss" scoped>
