@@ -59,10 +59,14 @@ import { get_curImageList, update_image_name, delete_image_api } from "~/api/ima
 import { showPrompt, toast } from '~/composables/util.js';
 import UploadFile from '~/components/UploadFile.vue';
 
-defineProps({
+const props = defineProps({
     showChecked: {
         type: Boolean,
         default: false
+    },
+    limit: {
+        type: Number,
+        default: 1
     }
 })
 
@@ -152,13 +156,13 @@ const emit = defineEmits(['choose'])
 const checkedImage = computed(() => {
     return imageList.value.filter(item => item.checked)
 })
+
+
 // 切换复选框
 const handleChooseChange = (item) => {
-    if (item.checked && checkedImage.value.length > 1) {
+    if (item.checked && checkedImage.value.length > props.limit ) {
         item.checked = false
-        
-        console.log('checkedImage', checkedImage.value)
-        return toast('只能选择一张图片', 'error')
+        return toast(`只能选择${props.limit}张图片`, 'error')
     }
     emit('choose', checkedImage.value)
 }

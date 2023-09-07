@@ -90,6 +90,40 @@ export function useInitTable (options = {}) {
         })
     }
 
+    // 选中table列表
+    const deleteIds = ref([])
+    // 选中的id
+    const handleSelectionChange = (val) => {
+        deleteIds.value = val.map(v => v.id)
+    }
+
+    // 批量删除
+    const multipleTableRef = ref(null)
+    const handleMultiDelete = (id = 0) => {
+        if (id) {
+            options.multiDeleteApi({
+                ids: [id]
+            }).then(res => {
+                toast('删除成功')
+                getTableData()
+            })
+        } else {
+            if (deleteIds.value.length == 0) {
+                return toast('请先选则要删除的规格', 'error')
+            }
+            options.multiDeleteApi({
+                ids: deleteIds.value
+            }).then(res => {
+                toast('删除成功')
+                if (multipleTableRef.value) {
+                    multipleTableRef.value.clearSelection()
+                }
+                getTableData()
+                deleteIds.value = []
+            })
+        }
+    }
+
     return {
         searchForm,
         resetSearchForm,
@@ -101,7 +135,11 @@ export function useInitTable (options = {}) {
         getTableData,
         changePage,
         handleDelete,
-        switchChange
+        switchChange,
+        deleteIds,
+        handleSelectionChange,
+        multipleTableRef,
+        handleMultiDelete
     }
 
 }
@@ -138,7 +176,11 @@ export function useManipulateTable(options = {}) {
         formRef.value.validate(valid => {
             if (!valid) return
             formDrawerRef.value.showLoading()
-    
+            
+            if (options.beforeSubmit && typeof options.beforeSubmit == 'function') {
+                Object.assign(formData, options.beforeSubmit(formData)) 
+            }
+
             const resultFunc = editId.value == 0 ? 
                 options.addApi(formData) : 
                 options.updateApi({

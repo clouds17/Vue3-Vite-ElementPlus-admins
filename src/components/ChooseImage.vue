@@ -1,7 +1,27 @@
 <template>
-    <div class="flex items-center">
-        <el-image v-if="modelValue" :src="modelValue" fit="cover" :lazy="true" class="border w-[100px] h-[100px] rounded mr-3"></el-image>
-        <div class="choose-image-btn" @click="open">
+    <div class="flex items-center flex-wrap">
+        <template v-if="modelValue">
+            <el-image v-if="(typeof modelValue == 'string')" :src="modelValue" fit="cover" :lazy="true" class="border w-[100px] h-[100px] rounded mx-1 mb-2"></el-image>
+            <template v-else>
+                <div 
+                    class="relative flex flex-wrap w-[100px] h-[100px] mx-1 mb-2" 
+                    v-for="(url, index) in modelValue" 
+                    :key="index">
+                        <el-icon 
+                            class="bg-white rounded-full text-md absolute top-[5px] right-[5px] z-10 "
+                            @click="removeImage(url)"
+                        ><CircleClose /></el-icon>
+                        <el-image 
+                            :src="url" 
+                            fit="cover" 
+                            :lazy="true" 
+                            class="border w-[100px] h-[100px] rounded "
+                        />
+                </div>
+                
+            </template>
+        </template>
+        <div class="choose-image-btn mx-1 mb-2" @click="open">
             <el-icon class="text-gray-500"><Plus /></el-icon>
         </div>
     </div>
@@ -19,7 +39,7 @@
             </el-header>
             <el-container>
                 <image-aside ref="imageAsideRef" @change="aside_completed"></image-aside>
-                <image-main ref="imageMainRef" showChecked @choose="imageChoose"></image-main>
+                <image-main ref="imageMainRef" :limit="limit" showChecked @choose="imageChoose"></image-main>
             </el-container>
         </el-container>
         <template #footer>
@@ -36,6 +56,7 @@
 import { ref } from "vue";
 import ImageAside from "~/components/image/ImageAside.vue";
 import ImageMain from "~/components/image/ImageMain.vue";
+import { toast } from '~/composables/util.js';
 
 
 
@@ -70,20 +91,32 @@ const imageChoose = (item) => {
     console.log('选择', item)
 }
 
-defineProps({
-    modelValue: [String, Array]
+const props = defineProps({
+    modelValue: [String, Array],
+    limit: {
+        type: Number,
+        default: 1
+    }
 })
 const emit = defineEmits(['update:modelValue'])
 
 const submit = () => {
     console.log('提交')
-    if (urls.length) {
-        emit('update:modelValue', urls[0])
+    if (props.limit > 1) {
+        let values = [...props.modelValue, ...urls]
+        if (values.length > props.limit) {
+            values = values.splice(0, 9)
+            toast('最多只能传9张图片', 'warning')
+        }
+        emit('update:modelValue', values)
+    } else {
+        emit('update:modelValue', urls[0] || '' )
     }
     close()
 }
 
-
+// 删除图片
+const removeImage = (url) => emit('update:modelValue', props.modelValue.filter(u => u != url)) 
 
 </script>
 

@@ -15,7 +15,7 @@ const URL = {
      * 获取管理员列表
      * @param(limit, keyword)
      * limit: 每页条数
-     * keyword: 管理员账户
+     * keyword: 关键词
      * 
      */
     GET_MANAGER_LIST: '/admin/manager/:page',
@@ -68,9 +68,9 @@ export const getInfo = () => request(URL.GETINFO, 'POST')
 
 export const update_password = ({oldpassword, password, repassword}) => request(URL.UPDATE_PASSWORD, 'POST', {oldpassword, password, repassword}) 
 
-export const get_manager_list = ({ page = 1, limit = 10, keyword = '' } = { page: 1, limit: 10, keyword: '' }) => {
+export const get_manager_list = ({ page = 1, limit = 10, ...options }) => {
     return new Promise((resolve, reject) => {
-        request(URL.GET_MANAGER_LIST.replace(':page', page), 'GET', { limit, keyword })
+        request(URL.GET_MANAGER_LIST.replace(':page', page), 'GET', { limit, ...options })
             .then(res => {
                 res.list.map(item => {
                     item.isLoading = false

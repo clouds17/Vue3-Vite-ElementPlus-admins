@@ -20,7 +20,8 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
-    }
+    },
+    open: 'http://localhost:5173/'
   },
   plugins: [
     vue(),

@@ -2,7 +2,7 @@ import { ElNotification, ElMessageBox } from 'element-plus';
 import nProgress from 'nprogress';
 
 // 成功提示
-export function toast(message = '成功', type = 'success', dangerouslyUseHTMLString = false) {
+export function toast(message = '成功', type = 'success', dangerouslyUseHTMLString = true) {
     ElNotification({
         message,
         type,

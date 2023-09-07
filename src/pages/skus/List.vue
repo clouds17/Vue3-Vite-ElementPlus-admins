@@ -2,18 +2,13 @@
     <div class="main-container">
         <el-card shadow="never" class=" border-0 h-full">
             <!-- 新增|刷新 -->
-            <table-list-header @create="openDrawer" @refresh="getTableData">
-                <el-popconfirm  title="是否批量删除选中规格?" width="180" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete()">
-                    <template #reference>
-                        <el-button
-                            size="default"
-                            type="danger"
-                        >批量删除</el-button>
-                    </template>
-                </el-popconfirm>
-            </table-list-header>
-
-            <el-table :data="tableData" stripe style="width: 100%" v-loading="isLoading"  @selection-change="handleSelectionChange">
+            <table-list-header 
+                layout="create, refresh, delete"
+                @create="openDrawer" 
+                @refresh="getTableData" 
+                @delete="handleMultiDelete" />
+                
+            <el-table ref="multipleTableRef" :data="tableData" stripe style="width: 100%" v-loading="isLoading"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"  />
                 <el-table-column prop="name" label="规格名称"  />
                 <el-table-column prop="default" label="规格值" width="380" show-overflow-tooltip/>
@@ -36,7 +31,7 @@
                             type="primary"
                             @click="handleEdit(scope.row)"
                         >修改</el-button>
-                        <el-popconfirm  title="是否删除此规格?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleDelete(scope.row.id)">
+                        <el-popconfirm  title="是否删除此规格?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleMultiDelete(scope.row.id)">
                             <template #reference>
                                 <el-button
                                     size="small"
@@ -70,30 +65,7 @@
                        <el-switch v-model="formData.status" :active-value="1" :inactive-value="0"  />
                     </el-form-item>
                     <el-form-item label="规格值" prop="default">
-                        <template v-if="dynamicTags.length > 0">
-                            <el-tag
-                                v-for="tag in dynamicTags"
-                                :key="tag"
-                                class="mx-1"
-                                closable
-                                :disable-transitions="false"
-                                @close="handleClose(tag)"
-                            >
-                                {{ tag }}
-                            </el-tag>
-                        </template>
-                        <el-input
-                            v-if="inputVisible"
-                            ref="InputRef"
-                            v-model="inputValue"
-                            class="ml-1 w-20"
-                            size="small"
-                            @keyup.enter="handleInputConfirm"
-                            @blur="handleInputConfirm"
-                        />
-                        <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
-                            + 添加值
-                        </el-button>
+                        <tag-input v-model="formData.default"></tag-input>
                     </el-form-item>
                 </el-form>
                 
@@ -105,25 +77,27 @@
 </template>
 
 <script setup>
-import { computed, ref, nextTick } from 'vue'
-import { toast } from '~/composables/util.js';
 import { get_skusList_api, add_skus_api, delete_skus_api, update_skus_api, update_skus_status } from '~/api/skus.js'
 import FormDrawer from "~/components/FormDrawer.vue";
 import TableListHeader from '~/components/TableListHeader.vue';
+import TagInput from '~/components/TagInput.vue';
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
 
 const {
     tableData,
     isLoading,
     page,
-    limit,
     totalCount,
     getTableData,
     changePage,
-    switchChange
+    switchChange,
+    handleSelectionChange,
+    multipleTableRef,
+    handleMultiDelete
 } = useInitTable({
     getTableApi: get_skusList_api,
-    updateStatusApi: update_skus_status
+    updateStatusApi: update_skus_status,
+    multiDeleteApi: delete_skus_api
 })
 
 
@@ -158,75 +132,6 @@ const {
     getTableData
 })
 
-// 选中table列表
-const deleteIds = ref([])
-
-const handleSelectionChange = (val) => {
-    deleteIds.value = val.map(v => v.id)
-}
-
-// 批量删除
-
-const handleDelete = (id = 0) => {
-    if (id) {
-        delete_skus_api({
-            ids: [id]
-        }).then(res => {
-            toast('删除成功')
-            getTableData()
-        })
-    } else {
-        if (deleteIds.value.length == 0) {
-            return toast('请先选则要删除的规格', 'error')
-        }
-        delete_skus_api({
-            ids: deleteIds.value
-        }).then(res => {
-            toast('删除成功')
-            getTableData()
-            deleteIds.value = []
-        })
-    }
-}
-
-// 添加规格值
-
-const dynamicTags = computed({
-    get() {
-        return formData.default.length > 0 ? formData.default.split(',') : []
-    },
-    set(newValue) {
-        console.log('newValue', newValue)
-        formData.default = newValue.join(',')
-    }
-})
-
-const inputValue = ref('')
-const inputVisible = ref(false)
-const InputRef = ref(null)
-
-const handleClose = (tag) => {
-    let tempArr = dynamicTags.value
-    tempArr.splice(tempArr.indexOf(tag), 1)
-    dynamicTags.value = tempArr
-}
-
-const showInput = () => {
-  inputVisible.value = true
-  nextTick(() => {
-    InputRef.value.input.focus()
-  })
-}
-
-const handleInputConfirm = () => {
-  if (inputValue.value) {
-    let tempArr = dynamicTags.value
-    tempArr.push(inputValue.value)
-    dynamicTags.value = tempArr
-  }
-  inputVisible.value = false
-  inputValue.value = ''
-}
 
 </script>
 

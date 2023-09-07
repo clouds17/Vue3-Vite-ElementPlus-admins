@@ -1,15 +1,11 @@
 <template>
     <el-card shadow="never" class=" border-0 h-full">
         <!-- 搜索 -->
-        <el-form :model="searchForm" :inline="true"> 
-            <el-form-item label="关键词">
-                <el-input class="w-[300px]" v-model="searchForm.keyword" clearable  placeholder="请输入管理员昵称搜索"></el-input>
-            </el-form-item>
-            <el-form-item class="flex items-center justify-end">
-                <el-button  type="primary" @click="getTableData(1)">搜索</el-button>
-                <el-button  @click="resetSearchForm">重置</el-button>
-            </el-form-item>
-        </el-form>
+        <Search :model="searchForm" @search="getTableData(1)" @reset="resetSearchForm">
+            <search-item label="关键词">
+                <el-input v-model="searchForm.keyword" clearable  placeholder="请输入管理员昵称搜索"></el-input>
+            </search-item>
+        </Search>
         
         <!-- 新增|刷新 -->
         <table-list-header @create="openDrawer" @refresh="getTableData"></table-list-header>
@@ -114,6 +110,8 @@ import { get_manager_list, add_manager_api, update_manager_api, delete_manager_a
 import FormDrawer from "~/components/FormDrawer.vue";
 import ChooseImage from '~/components/ChooseImage.vue'
 import TableListHeader from '~/components/TableListHeader.vue';
+import Search from '~/components/search/Search.vue'
+import SearchItem from '~/components/search/SearchItem.vue'
 
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
 
