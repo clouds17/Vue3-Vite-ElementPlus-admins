@@ -97,8 +97,9 @@
                             <el-button 
                                 class="px-1"
                                 size="small" 
-                                type="primary"
-                                @click="handleEdit(scope.row)"
+                                :type="!scope.row.content ? 'danger' : 'primary'"
+                                :loading="scope.row.contentLoading"
+                                @click="handleSetGoodsContent(scope.row)"
                             >商品详情</el-button>
                             <el-popconfirm  title="是否删除该商品?" width="160" confirm-button-text="删除" cancel-button-text="取消" @confirm="handleMultiDelete(scope.row.id)">
                                 <template #reference>
@@ -182,7 +183,8 @@
             </form-drawer>
 
 
-            <banners ref="bannersRef" @reload-data="getTableData"></banners>
+            <Banners ref="bannersRef" @reload-data="getTableData"></Banners>
+            <Content ref="contentRef" @reload-data="getTableData"></Content>
         </el-card>
     </div>
     
@@ -198,7 +200,8 @@ import TableListHeader from '~/components/TableListHeader.vue';
 import Search from '~/components/search/Search.vue'
 import SearchItem from '~/components/search/SearchItem.vue'
 import { toast } from '~/composables/util.js';
-import banners from '~/pages/goods/banners.vue';
+import Banners from '~/pages/goods/Banners.vue';
+import Content from '~/pages/goods/Content.vue';
 
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
 
@@ -321,6 +324,13 @@ const bannersRef = ref(null)
 const handleSetGoodsBanners = (row) => {
     bannersRef.value.open(row)
 }
+
+// 打开商品详情
+const contentRef = ref(null)
+const handleSetGoodsContent = (row) => {
+    contentRef.value.open(row)
+}
+
 
 </script>
 

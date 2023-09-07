@@ -22,9 +22,9 @@
                 点击或拖拽上传图片
             </div>
             <template #tip>
-            <div class="el-upload__tip">
-                支持jpg/png 文件且图片小于500KB
-            </div>
+                <div class="el-upload__tip">
+                    支持jpg/png 文件且图片小于500KB
+                </div>
             </template>
         </el-upload>
   </el-drawer>

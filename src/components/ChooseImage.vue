@@ -1,54 +1,55 @@
 <template>
-    <div class="flex items-center flex-wrap">
-        <template v-if="modelValue">
-            <el-image v-if="(typeof modelValue == 'string')" :src="modelValue" fit="cover" :lazy="true" class="border w-[100px] h-[100px] rounded mx-1 mb-2"></el-image>
-            <template v-else>
-                <div 
-                    class="relative flex flex-wrap w-[100px] h-[100px] mx-1 mb-2" 
-                    v-for="(url, index) in modelValue" 
-                    :key="index">
-                        <el-icon 
-                            class="bg-white rounded-full text-md absolute top-[5px] right-[5px] z-10 "
-                            @click="removeImage(url)"
-                        ><CircleClose /></el-icon>
-                        <el-image 
-                            :src="url" 
-                            fit="cover" 
-                            :lazy="true" 
-                            class="border w-[100px] h-[100px] rounded "
-                        />
-                </div>
-                
+    <div>
+        <div class="flex items-center flex-wrap" v-if="showBtn">
+            <template v-if="modelValue">
+                <el-image v-if="(typeof modelValue == 'string')" :src="modelValue" fit="cover" :lazy="true" class="border w-[100px] h-[100px] rounded mx-1 mb-2"></el-image>
+                <template v-else>
+                    <div 
+                        class="relative flex flex-wrap w-[100px] h-[100px] mx-1 mb-2" 
+                        v-for="(url, index) in modelValue" 
+                        :key="index">
+                            <el-icon 
+                                class="bg-white rounded-full text-md absolute top-[5px] right-[5px] z-10 "
+                                @click="removeImage(url)"
+                            ><CircleClose /></el-icon>
+                            <el-image 
+                                :src="url" 
+                                fit="cover" 
+                                :lazy="true" 
+                                class="border w-[100px] h-[100px] rounded "
+                            />
+                    </div>
+                    
+                </template>
             </template>
-        </template>
-        <div class="choose-image-btn mx-1 mb-2" @click="open">
-            <el-icon class="text-gray-500"><Plus /></el-icon>
+            <div class="choose-image-btn mx-1 mb-2" @click="open" >
+                <el-icon class="text-gray-500"><Plus /></el-icon>
+            </div>
         </div>
-    </div>
-    <el-dialog
-        title="选择图片"
-        v-model="dialogVisible"
-        width="80%"
-        top="5vh"
-        
-    >
-        <el-container class="bg-white rounded">
-            <el-header>
-                <el-button type="primary" @click="openDrawer">新增图片分类</el-button>
-                <el-button type="warning" @click="uploadFile">上传图片</el-button>
-            </el-header>
-            <el-container>
-                <image-aside ref="imageAsideRef" @change="aside_completed"></image-aside>
-                <image-main ref="imageMainRef" :limit="limit" showChecked @choose="imageChoose"></image-main>
+        <el-dialog
+            title="选择图片"
+            v-model="dialogVisible"
+            width="80%"
+            top="5vh"
+        >
+            <el-container class="bg-white rounded">
+                <el-header>
+                    <el-button type="primary" @click="openDrawer">新增图片分类</el-button>
+                    <el-button type="warning" @click="uploadFile">上传图片</el-button>
+                </el-header>
+                <el-container>
+                    <image-aside ref="imageAsideRef" @change="aside_completed"></image-aside>
+                    <image-main ref="imageMainRef" :limit="limit" showChecked @choose="imageChoose"></image-main>
+                </el-container>
             </el-container>
-        </el-container>
-        <template #footer>
-            <span>
-                <el-button @click="close">取消</el-button>
-                <el-button type="primary" @click="submit">确定</el-button>
-            </span>
-        </template>
-    </el-dialog>
+            <template #footer>
+                <span>
+                    <el-button @click="close">取消</el-button>
+                    <el-button type="primary" @click="submit">确定</el-button>
+                </span>
+            </template>
+        </el-dialog>
+    </div>
     
 </template>
 
@@ -78,7 +79,11 @@ const uploadFile = () => {
 // dialog框打开和关闭
 const dialogVisible = ref(false)
 
-const open = () => dialogVisible.value = true
+const callBackFunction = ref(null)
+const open = (callBack = null) => {
+    callBackFunction.value = callBack
+    dialogVisible.value = true
+}
 const close = () => {
     dialogVisible.value = false
     imageMainRef.value.clearChooseBox()
@@ -96,19 +101,27 @@ const props = defineProps({
     limit: {
         type: Number,
         default: 1
+    },
+    showBtn: {
+        type: Boolean,
+        default: true
     }
 })
 const emit = defineEmits(['update:modelValue'])
 
 const submit = () => {
-    console.log('提交')
     if (props.limit > 1) {
-        let values = [...props.modelValue, ...urls]
-        if (values.length > props.limit) {
-            values = values.splice(0, 9)
-            toast('最多只能传9张图片', 'warning')
+        // 编辑商品详情时添加图片
+        if (!props.showBtn && typeof callBackFunction.value === 'function') {
+            callBackFunction.value(urls)
+        } else {
+            let values = [...props.modelValue, ...urls]
+            if (values.length > props.limit) {
+                values = values.splice(0, props.limit)
+                toast(`最多只能传${props.limit}张图片`, 'warning')
+            }
+            emit('update:modelValue', values)
         }
-        emit('update:modelValue', values)
     } else {
         emit('update:modelValue', urls[0] || '' )
     }
@@ -117,6 +130,11 @@ const submit = () => {
 
 // 删除图片
 const removeImage = (url) => emit('update:modelValue', props.modelValue.filter(u => u != url)) 
+
+defineExpose({
+    open,
+    close
+})
 
 </script>
 

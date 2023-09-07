@@ -87,6 +87,7 @@ export const get_goods_list = ({ page = 1, limit = 10, ...options }) => {
             .then(res => {
                 res.list.map(item => {
                     item.bannersLoading = false
+                    item.contentLoading = false
                     return item
                 })
                 resolve(res)
