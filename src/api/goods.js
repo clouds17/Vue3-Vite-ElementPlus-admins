@@ -78,6 +78,50 @@ const URL = {
      */
     SET_GOODS_BANNERS: '/admin/goods/banners/:id',
 
+     /**
+     * 更新商品规格
+     * @param (id, sku_type, sku_value, goodsSkus)
+     * sku_type: 规格类型：0单规格1多规格
+     * sku_value: 单规格属性（sku_type=0时必填）
+     * goodsSkus: 多规格属性（sku_type=1时必填）
+     */
+     UPDATE_GOODS_SKUS: '/admin/goods/updateskus/:id',
+
+     /**
+     * 添加商品规格选项
+     * @param (goods_id, name, order, type)
+     * goods_id: 商品ID
+     * name: 规格名称
+     * order: 排序
+     * type：就写 0
+     */
+     CREATE_GOODS_SKUS_CARD: '/admin/goods_skus_card',
+
+     /**
+     * 修改商品规格选项
+     * @param (id, goods_id, name, order, type)
+     * goods_id: 商品ID
+     * name: 规格名称
+     * order: 排序
+     * type：就写 0
+     */
+     UPDATE_GOODS_SKUS_CARD: '/admin/goods_skus_card/:id',
+
+     /**
+     * 删除商品规格选项
+     * @param (id, goods_id, name, order, type)
+     * 
+     */
+     DELETE_GOODS_SKUS_CARD: '/admin/goods_skus_card/:id/delete',
+
+     /**
+     * 排序商品规格选项
+     * @param (sortdata)
+     * sortdata: [{ id:1,order:1 },{ id:2,order:2 }] 排序后的数据
+     * 
+     */
+     SORT_GOODS_SKUS_CARD: '/admin/goods_skus_card/sort',
+
 }
 
 
@@ -88,6 +132,7 @@ export const get_goods_list = ({ page = 1, limit = 10, ...options }) => {
                 res.list.map(item => {
                     item.bannersLoading = false
                     item.contentLoading = false
+                    item.skusLoading = false
                     return item
                 })
                 resolve(res)
@@ -114,4 +159,14 @@ export const update_goods_status = ({ ids = [], status = 0 } = { ids: [], status
 export const read_goods_api = ({ id }) => request(URL.READ_GOODS.replace(':id', id), 'GET')
 
 export const set_goods_banners = ({ id, banners = [] }) => request(URL.SET_GOODS_BANNERS.replace(':id', id), 'POST', { banners })
+
+export const update_goods_skus = ({ id, ...options }) => request(URL.UPDATE_GOODS_SKUS.replace(':id', id), 'POST', options )
+
+export const create_goods_skus_card = (options) => request(URL.CREATE_GOODS_SKUS_CARD, 'POST', options )
+
+export const update_goods_skus_card = ({ id, ...options }) => request(URL.UPDATE_GOODS_SKUS_CARD.replace(':id', id), 'POST', options )
+
+export const delete_goods_skus_card = ({ id }) => request(URL.DELETE_GOODS_SKUS_CARD.replace(':id', id), 'POST')
+
+export const sort_goods_skus_card = ( options ) => request(URL.SORT_GOODS_SKUS_CARD, 'POST', options)
 

@@ -85,7 +85,8 @@
                                 class="px-1"
                                 size="small" 
                                 type="primary"
-                                @click="handleEdit(scope.row)"
+                                :loading="scope.row.skusLoading"
+                                @click="handleSetGoodsSkus(scope.row)"
                             >商品规格</el-button>
                             <el-button 
                                 class="px-1"
@@ -185,6 +186,7 @@
 
             <Banners ref="bannersRef" @reload-data="getTableData"></Banners>
             <Content ref="contentRef" @reload-data="getTableData"></Content>
+            <Skus ref="skusRef" @reload-data="getTableData"></Skus>
         </el-card>
     </div>
     
@@ -202,6 +204,7 @@ import SearchItem from '~/components/search/SearchItem.vue'
 import { toast } from '~/composables/util.js';
 import Banners from '~/pages/goods/Banners.vue';
 import Content from '~/pages/goods/Content.vue';
+import Skus from '~/pages/goods/Skus.vue';
 
 import { useInitTable, useManipulateTable } from '~/composables/useCommonList.js'
 
@@ -329,6 +332,12 @@ const handleSetGoodsBanners = (row) => {
 const contentRef = ref(null)
 const handleSetGoodsContent = (row) => {
     contentRef.value.open(row)
+}
+
+// 打开商品规格
+const skusRef = ref(null)
+const handleSetGoodsSkus = (row) => {
+    skusRef.value.open(row)
 }
 
 
