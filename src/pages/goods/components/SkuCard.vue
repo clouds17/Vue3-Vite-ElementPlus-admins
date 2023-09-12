@@ -11,7 +11,7 @@
                 <div class="flex items-center">
                     <el-input v-model="item.text" placeholder="规格名称" style="max-width: 300px;" @change="updateSkuCardEvent(item)">
                         <template #append>
-                            <el-icon><more/></el-icon>
+                            <el-icon class="cursor-pointer" @click="handleChooseSku(item)"><more/></el-icon>
                         </template>
                     </el-input>
                     <el-button 
@@ -39,12 +39,16 @@
         </el-card>
         <el-button type="success" :loading="btnLoading" @click="addSkuCardEvent" >添加规格</el-button>
         
-        
+        <choose-sku ref="ChooseSkuRef"></choose-sku>
+
     </el-form-item>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import SkuCardItem from './SkuCardItem.vue';
+import ChooseSku from '~/components/ChooseSku.vue';
+
 import {
     sku_card_list,
     btnLoading,
@@ -52,8 +56,18 @@ import {
     updateSkuCardEvent,
     deleteSkuCardEvent,
     sortCard,
-    isLoading
+    isLoading,
+    handleChooseSetGoodsSkuCard
 } from '~/composables/useSku.js'
+
+
+const ChooseSkuRef = ref(null)
+const handleChooseSku = (item) => {
+    ChooseSkuRef.value.open((options) => {
+        handleChooseSetGoodsSkuCard(item, options)
+    })
+}
+
 </script>
 
 <style lang="scss" scoped>

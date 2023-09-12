@@ -1,5 +1,14 @@
-import { ref } from 'vue'
-import { create_goods_skus_card, update_goods_skus_card, delete_goods_skus_card, sort_goods_skus_card } from '~/api/goods.js'
+import { ref, nextTick } from 'vue'
+import { 
+    create_goods_skus_card,
+    update_goods_skus_card, 
+    delete_goods_skus_card, 
+    sort_goods_skus_card,
+    create_goods_skus_card_value,
+    update_goods_skus_card_value,
+    delete_goods_skus_card_value,
+    set_goods_skus_card_value
+ } from '~/api/goods.js'
 import { useArrayMoveUp, useArrayMoveDown } from '~/composables/util.js'
 
 // 当前的商品ID
@@ -99,7 +108,108 @@ export function sortCard(action, index) {
     
 }
 
+
+// 选择弹框设置规格
+export function handleChooseSetGoodsSkuCard(item, options) {
+    item.isLoading = true
+    set_goods_skus_card_value({
+        id: item.id,
+        name: options.name,
+        value: options.list
+    }).then(res => {
+        item.name = item.text = res.goods_skus_card.name
+        item.goodsSkusCardValue = res.goods_skus_card_value.map(v => {
+            v.text = v.value || '属性值'
+            return v
+        })
+    }).finally(() => {
+        item.isLoading = false
+    })
+}
+
 // 初始化规格值选项
 export function initSkuCardItem(id) {
-    return sku_card_list.value.find(item => item.id == id)
+    const item = sku_card_list.value.find(item => item.id == id)
+    item.loading = false
+    const inputValue = ref('')
+    const inputVisible = ref(false)
+    const InputRef = ref(null)
+
+
+    const showInput = () => {
+        inputVisible.value = true
+        nextTick(() => {
+            InputRef.value.input.focus()
+        })
+    }
+    // 添加
+    const handleInputConfirm = () => {
+        if (inputValue.value) {
+            item.loading = true
+            create_goods_skus_card_value({
+                goods_skus_card_id: id,
+                name: item.name,
+                order: 50,
+                value: inputValue.value
+            }).then(res => {
+                item.goodsSkusCardValue.push({
+                    ...res,
+                    text: res.value
+                })
+            }).finally(() => {
+                item.loading = false
+                resetInput()
+            })
+        } else {
+            resetInput()
+        }
+        
+    }
+    function resetInput() {
+        inputVisible.value = false
+        inputValue.value = ''
+    }
+    // 修改
+    const handleChange = (value, tag) => {
+        item.loading = true
+        update_goods_skus_card_value({
+            id: tag.id,
+            goods_skus_card_id: id,
+            name: item.name,
+            order: tag.order,
+            value: value
+        }).then(res => {
+            tag.value = value
+        }).catch(err => {
+            tag.text = tag.value
+        }).finally(() => {
+            item.loading = false
+        })
+    }
+
+    // 删除
+    const handleClose = (tag) => {
+        item.loading = true
+        delete_goods_skus_card_value({
+            id: tag.id
+        }).then(res => {
+            const index = item.goodsSkusCardValue.findIndex(v => v.id == tag.id)
+            if (index != -1) {
+                item.goodsSkusCardValue.splice(index, 1)
+            }
+        }).finally(() => {
+            item.loading = false
+        })
+    }
+
+    return {
+        item,
+        inputValue,
+        inputVisible,
+        InputRef,
+        handleChange,
+        handleClose,
+        showInput,
+        handleInputConfirm
+    }
 }
