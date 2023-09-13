@@ -51,7 +51,8 @@ import FormDrawer from '~/components/FormDrawer.vue';
 import SkuCard from './components/SkuCard.vue';
 import {
     goodsId,
-    initSkuCardList
+    initSkuCardList,
+    sku_list
 } from '~/composables/useSku.js'
 
 const FormDrawerRef = ref(null)
@@ -90,12 +91,17 @@ const open = (row) => {
 
 const emit = defineEmits(['reloadData'])
 
-const onSubmit = () => {
+const onSubmit = () => { 
     FormDrawerRef.value.showLoading()
-    update_goods_skus({
+    let params = {
         id: goodsId.value,
         ...formData
-    }).then(res => {
+    }
+    if (formData.sku_type == 1) {
+        params.goodsSkus = sku_list.value
+    }
+
+    update_goods_skus(params).then(res => {
         toast('更新商品规格成功')
         FormDrawerRef.value.close()
         emit('reloadData')

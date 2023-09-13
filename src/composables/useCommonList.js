@@ -101,6 +101,7 @@ export function useInitTable (options = {}) {
     const multipleTableRef = ref(null)
     const handleMultiDelete = (id = 0) => {
         if (id) {
+            console.log('这里', id)
             options.multiDeleteApi({
                 ids: [id]
             }).then(res => {

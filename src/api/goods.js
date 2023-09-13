@@ -57,6 +57,20 @@ const URL = {
     DELETE_GOODS: '/admin/goods/delete_all',
 
     /**
+     * 批量恢复商品
+     * @param (ids)
+     * ids: 要恢复的id数组
+     */
+    RESTORE_GOODS: '/admin/goods/restore',
+
+    /**
+     * 彻底删除商品
+     * @param (ids)
+     * ids: 要彻底删除的id数组
+     */
+    DESTROY_GOODS: '/admin/goods/destroy',
+
+    /**
      * 批量修改商品状态
      * @param(ids, status)
      * ids: 要修改的id数组
@@ -64,6 +78,14 @@ const URL = {
      * 
      */
     UPDATE_GOODS_STATUS: '/admin/goods/changestatus',
+
+    /**
+     * 审核商品
+     * @param(id, ischeck)
+     * ischeck: 审核 1同意 2拒绝
+     * 
+     */
+    CHECK_GOODS_STATUS: '/admin/goods/:id/check',
 
     /**
      * 查看商品资料
@@ -192,8 +214,14 @@ export const update_goods_api = ({id, ...options}) =>
 
 export const delete_goods_api = ({ ids = [] } = { ids: [] }) => request(URL.DELETE_GOODS, 'POST', { ids })
 
+export const restore_goods_api = ({ ids = [] } = { ids: [] }) => request(URL.RESTORE_GOODS, 'POST', { ids })
+
+export const destroy_goods_api = ({ ids = [] } = { ids: [] }) => request(URL.DESTROY_GOODS, 'POST', { ids })
+
 export const update_goods_status = ({ ids = [], status = 0 } = { ids: [], status: 0 }) => 
     request(URL.UPDATE_GOODS_STATUS, 'POST', { ids, status })
+
+export const check_goods_status = ({ id, ischeck = 1 }) => request(URL.CHECK_GOODS_STATUS.replace(':id', id), 'POST', { ischeck })
 
 export const read_goods_api = ({ id }) => request(URL.READ_GOODS.replace(':id', id), 'GET')
 

@@ -26,11 +26,31 @@
             
              <!-- 新增|刷新 -->
              <table-list-header 
-                layout="create, refresh, delete"
-                title="商品"
                 @create="openDrawer" 
-                @refresh="getTableData" 
-                @delete="handleMultiDelete" >
+                @refresh="getTableData"  >
+                    <el-popconfirm  
+                        v-if="searchForm.tab != 'delete'"
+                        title="是否批量删除该商品?" 
+                        width="180" 
+                        confirm-button-text="删除" 
+                        cancel-button-text="取消" 
+                        @confirm="handleMultiDelete(0)">
+                            <template #reference>
+                                <el-button type="danger">批量删除</el-button>
+                            </template>
+                    </el-popconfirm>
+                    <el-button type="warning" v-if="searchForm.tab == 'delete'" @click="handleMultiRestore">恢复商品</el-button>
+                    <el-popconfirm  
+                        v-if="searchForm.tab == 'delete'"
+                        title="是否彻底删除该商品?" 
+                        width="170" 
+                        confirm-button-text="删除" 
+                        cancel-button-text="取消" 
+                        @confirm="handleMultiDestroy">
+                            <template #reference>
+                                <el-button type="danger">彻底删除</el-button>
+                            </template>
+                    </el-popconfirm>
                     <el-button v-if="searchForm.tab == 'all' || searchForm.tab == 'off'" @click="goodsManager(1)">上架</el-button>
                     <el-button v-if="searchForm.tab == 'all' || searchForm.tab == 'saling'" @click="goodsManager(0)">下架</el-button>
             </table-list-header>
@@ -64,8 +84,8 @@
                 <el-table-column  label="审核状态" width="140" align="center" v-if="searchForm.tab != 'delete'">
                     <template #default="{ row }">
                         <div v-if="row.ischeck == 0">
-                            <el-button type="success" size="small" plain>审核通过</el-button>
-                            <el-button class="mt-1" type="danger" size="small" plain style="margin-left: 0 !important;">审核拒绝</el-button>
+                            <el-button type="success" size="small" plain @click="CheckGoodsStatus(row, 1)">审核通过</el-button>
+                            <el-button class="mt-1" type="danger" size="small" plain @click="CheckGoodsStatus(row, 2)" style="margin-left: 0 !important;">审核拒绝</el-button>
                         </div>
                         <el-tag v-else-if="row.ischeck == 1" type="success" size="small"  effect="plain">通过</el-tag>
                         <el-tag v-else type="danger" size="small"  effect="plain">拒绝</el-tag>
@@ -84,7 +104,7 @@
                             <el-button 
                                 class="px-1"
                                 size="small" 
-                                type="primary"
+                                :type="isSetSku(scope.row)"
                                 :loading="scope.row.skusLoading"
                                 @click="handleSetGoodsSkus(scope.row)"
                             >商品规格</el-button>
@@ -194,7 +214,16 @@
 
 <script setup>
 import { ref } from 'vue';
-import { get_goods_list, add_goods_api, update_goods_api, delete_goods_api, update_goods_status } from '~/api/goods.js'
+import { 
+    get_goods_list,
+    add_goods_api, 
+    update_goods_api, 
+    delete_goods_api, 
+    update_goods_status, 
+    check_goods_status,
+    restore_goods_api,
+    destroy_goods_api
+} from '~/api/goods.js'
 import { get_category_list } from '~/api/category.js'
 import FormDrawer from "~/components/FormDrawer.vue";
 import ChooseImage from '~/components/ChooseImage.vue'
@@ -302,25 +331,6 @@ get_category_list().then(res => {
     category_list.value = res
 })
 
-// 商品批量上下架
-const goodsManager = (status) => {
-    isLoading.value = true
-    update_goods_status({
-        ids: deleteIds.value,
-        status
-    }).then(res => {
-        toast(status ? '上架成功' : '下架成功')
-        if (multipleTableRef.value) {
-            multipleTableRef.value.clearSelection()
-        }
-        getTableData()
-        deleteIds.value = []
-    }).finally(() => {
-        isLoading.value = false
-    })
-
-}
-
 
 // 打开轮播图
 const bannersRef = ref(null)
@@ -340,6 +350,117 @@ const handleSetGoodsSkus = (row) => {
     skusRef.value.open(row)
 }
 
+// 判断商品规格是否设置了
+const isSetSku = (item) => {
+    return (item.sku_type == 0 && item.sku_value && Object.keys(item.sku_value).length > 0) 
+        || (item.sku_type == 1 && item.goods_skus && item.goods_skus.length > 0) ? 'primary' : 'danger'
+}
+
+// 商品批量上下架
+const goodsManager = (status) => {
+    handleMultiAction(update_goods_status, {
+        ids: deleteIds.value,
+        status
+    }, true)
+    .then(res => {
+        toast(status ? '上架成功' : '下架成功')
+    })
+    // isLoading.value = true
+    // update_goods_status({
+    //     ids: deleteIds.value,
+    //     status
+    // }).then(res => {
+    //     toast(status ? '上架成功' : '下架成功')
+    //     if (multipleTableRef.value) {
+    //         multipleTableRef.value.clearSelection()
+    //     }
+    //     getTableData()
+    //     deleteIds.value = []
+    // }).finally(() => {
+    //     isLoading.value = false
+    // })
+
+}
+
+// 审核商品状态
+const CheckGoodsStatus = (item, ischeck) => {
+    handleMultiAction(check_goods_status, {
+        id: item.id,
+        ischeck
+    })
+    .then(res => {
+        if (ischeck == 1) {
+            toast('审核通过')
+        } else {
+            toast('审核拒绝', 'error')
+        }
+    })
+    // isLoading.value = true
+    // check_goods_status({
+    //     id: item.id,
+    //     ischeck
+    // }).then(res => {
+    //     if (ischeck == 1) {
+    //         toast('审核通过')
+    //     } else {
+    //         toast('审核拒绝', 'error')
+    //     }
+    //     getTableData()
+    // }).finally(() => {
+    //     isLoading.value = false
+    // })
+}
+
+// 恢复商品
+const handleMultiRestore = () => {
+    handleMultiAction(restore_goods_api, {
+        ids: deleteIds.value
+    }, true)
+    .then(res => {
+        toast('商品恢复成功')
+    })
+    // isLoading.value = true
+    // restore_goods_api({
+    //     ids: deleteIds.value
+    // }).then(res => {
+    //     toast('商品恢复成功')
+    //     if (multipleTableRef.value) {
+    //         multipleTableRef.value.clearSelection()
+    //     }
+    //     getTableData()
+    //     deleteIds.value = []
+    // }).finally(() => {
+    //     isLoading.value = false
+    // })
+}
+
+// 彻底删除商品
+const handleMultiDestroy = () => {
+    handleMultiAction(destroy_goods_api, {
+        ids: deleteIds.value
+    }, true)
+    .then(res => {
+        toast('彻底删除成功')
+    })
+}
+// 复用函数
+const handleMultiAction = (apiName, params, isClear = false) => {
+    return new Promise((resolve, reject) => {
+        isLoading.value = true
+        apiName(params).then(res => {
+            if (isClear) {
+                if (multipleTableRef.value) {
+                    multipleTableRef.value.clearSelection()
+                }
+                deleteIds.value = []
+            }
+            resolve(res)
+            getTableData()
+        }).finally(() => {
+            isLoading.value = false
+        })
+    })
+}
 
 </script>
 
