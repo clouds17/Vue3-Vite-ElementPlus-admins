@@ -9,7 +9,7 @@
             <el-col :span="8" :offset="showSearch ? 0 : 8 ">
                 <el-form-item class="text-right">
                     <el-button  type="primary" @click="$emit('search')">搜索</el-button>
-                    <el-button  @click="$emit('reset')">重置</el-button>
+                    <el-button v-if="isShowReset" @click="$emit('reset')">重置</el-button>
                     <el-button type="primary"  text @click="showSearch = !showSearch" v-if="hasShowSearch">
                         {{ showSearch ? '收起' : '展开' }}
                         <el-icon  class="pl-1">
@@ -28,13 +28,18 @@
 import { ref, useSlots } from 'vue';
 
 defineProps({
-    model: Object
+    model: Object,
+    isShowReset: {
+        type: Boolean,
+        default: true
+    }
 })
 const emit = defineEmits(['search', 'reset'])
 
 // 查看父组件引用有没有使用插槽
 const slots = useSlots()
 const hasShowSearch = ref(!!slots.show)
+console.log('slots', slots)
 
 
 // 显示隐藏搜索

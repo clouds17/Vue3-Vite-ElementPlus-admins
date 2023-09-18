@@ -564,4 +564,30 @@ const form = reactive({
    <div v-permission="['getStatistics3,GET']"></div>
    ```
 
-   
+
+
+
+### 组件内查看父组件引用有没有使用插槽
+
+```
+<template>
+	<div>
+		//默认插槽
+		<slot/>
+		// 具名插槽
+		<slot name="show"/>
+	</div>
+</template>
+<script setup>
+import { ref, useSlots } from 'vue';
+
+// 查看父组件引用有没有使用插槽
+const slots = useSlots()
+console.log('slots', slots)
+// slots里面如果有show函数表示父组件使用时用了具名插槽
+// slots里面如果有default函数表示父组件使用时用了默认插槽
+const hasShowSearch = ref(!!slots.show)
+
+</script>
+```
+

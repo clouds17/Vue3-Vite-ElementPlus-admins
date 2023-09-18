@@ -164,6 +164,14 @@ const asyncRoutes = [
         },
         component: () => import('~/pages/skus/List.vue')
     },
+    { 
+        path: '/level/list',
+        name: '/level/list',
+        meta: {
+            title: '会员等级'
+        },
+        component: () => import('~/pages/level/List.vue')
+    },
 ]
 
 
