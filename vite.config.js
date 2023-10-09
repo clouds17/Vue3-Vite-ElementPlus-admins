@@ -4,10 +4,11 @@ import WindiCSS from 'vite-plugin-windicss'
 import path from "path"
 
 console.log(import.meta.env);
-console.log(process.env.NODE_ENV);
+console.log('模式', process.env.NODE_ENV);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? './' : '/',
   resolve: {
     alias: {
       "~": path.resolve(__dirname, 'src')

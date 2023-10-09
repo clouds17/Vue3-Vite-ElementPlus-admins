@@ -591,3 +591,32 @@ const hasShowSearch = ref(!!slots.show)
 </script>
 ```
 
+
+
+### 导出下载Excel文件
+
+1. 设置接口响应类型
+
+   - 下载文件，那么后端接口返回来的应该是一个文件流
+   - 所以接口应该设置响应类型： `responseType: 'blob'`
+
+2. 得到接口响应数据后
+
+   ```
+   // 响应数据: data
+   // 是一个blob数据
+   // 转成url链接
+   let url = Window.URL.createObjectURL(new Blob([ data ]))
+   // 创建a标签
+   let link = document.createElement("a")
+   link.style.display = "none"
+   link.href = url
+   // 设置文件名
+   let filename = Date.now() + ".xlsx"
+   link.setAttribute("download", filename)
+   document.body.appendChild(link)
+   link.click()
+   ```
+
+   
+

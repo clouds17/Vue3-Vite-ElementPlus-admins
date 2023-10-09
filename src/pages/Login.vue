@@ -9,6 +9,9 @@
           <p >
             此站点为小黄的Vue3 + ElementPlus 实战商城后台项目
           </p>
+          <h5 class=" text-white mt-2 text-md">
+            账号: admin  密码: admin
+          </h5>
         </div>
       </el-col>
       <el-col :lg="8" :md="12"  class="right-box">

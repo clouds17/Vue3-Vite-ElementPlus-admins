@@ -37,7 +37,7 @@ const URL = {
     UPLOAD_IMAGE: '/admin/image/upload'
 
 }
-const baseURL = process.env.NODE_ENV === 'development' ? '/api' : 'http://ceshi13.dishait.cn';
+const baseURL = import.meta.env.VITE_APP_BASE_API;
 
 export const get_curImageList = ({id, page = 1, limit = 10}) => {
     return new Promise((resolve, reject) => {

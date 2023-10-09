@@ -19,13 +19,22 @@
             </el-popconfirm>
             <slot></slot>
         </div>
-        <el-tooltip
-            v-if="btns.includes('refresh')"
-            content="刷新数据" placement="top" effect="dark">
-            <el-button type="text" @click="$emit('refresh')">
-                <el-icon :size="18"><Refresh /></el-icon>
-            </el-button>
-        </el-tooltip>
+        <div class="flex items-center">
+            <el-tooltip
+                v-if="btns.includes('refresh')"
+                content="刷新数据" placement="top" effect="dark">
+                <el-button type="text" @click="$emit('refresh')">
+                    <el-icon :size="18"><Refresh /></el-icon>
+                </el-button>
+            </el-tooltip>
+            <el-tooltip
+                v-if="btns.includes('download')"
+                content="导出数据" placement="top" effect="dark">
+                <el-button type="text" @click="$emit('download')">
+                    <el-icon :size="18"><Download /></el-icon>
+                </el-button>
+            </el-tooltip>
+        </div>
     </div>
 </template>
 
@@ -45,7 +54,7 @@ const props = defineProps({
 
 const btns = computed(() => props.layout.replace(/\s+/g, '').split(','))
 
-defineEmits(['create', 'refresh', 'delete'])
+defineEmits(['create', 'refresh', 'delete', 'download'])
 </script>
 
 

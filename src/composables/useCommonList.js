@@ -20,9 +20,11 @@ export function useInitTable (options = {}) {
         searchForm = reactive({ ...options.searchForm })
         resetSearchForm = () => {
             for (const key in searchForm) {
-                searchForm[key] = options.searchForm[key]
-                getTableData(1)
+                if (key !== 'user_id') {
+                    searchForm[key] = options.searchForm[key]
+                }
             }
+            getTableData(1)
         }
     }
     

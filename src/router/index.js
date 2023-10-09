@@ -125,6 +125,22 @@ const asyncRoutes = [
         component: () => import('~/pages/setting/Base.vue')
     },
     { 
+        path: '/setting/buy',
+        name: '/setting/buy',
+        meta: {
+            title: '支付设置'
+        },
+        component: () => import('~/pages/setting/Buy.vue')
+    },
+    { 
+        path: '/setting/ship',
+        name: '/setting/ship',
+        meta: {
+            title: '物流设置'
+        },
+        component: () => import('~/pages/setting/Ship.vue')
+    },
+    { 
         path: '/coupon/list',
         name: '/coupon/list',
         meta: {
@@ -171,6 +187,22 @@ const asyncRoutes = [
             title: '会员等级'
         },
         component: () => import('~/pages/level/List.vue')
+    },
+    { 
+        path: '/distribution/index',
+        name: '/distribution/index',
+        meta: {
+            title: '分销员管理'
+        },
+        component: () => import('~/pages/distribution/Index.vue')
+    },
+    { 
+        path: '/distribution/setting',
+        name: '/distribution/setting',
+        meta: {
+            title: '分销设置'
+        },
+        component: () => import('~/pages/distribution/Setting.vue')
     },
 ]
 
